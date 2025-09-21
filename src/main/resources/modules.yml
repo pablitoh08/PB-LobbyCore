@@ -1,0 +1,16 @@
+modules:
+  whitelist: false
+  no-item-drop: true
+  no-block-break: true
+  no-block-place: true
+  no-interact: true
+  no-damage: true
+  join-quit-messages: true
+  command-blocker: true
+  no-mobs: true
+  no-pvp: true
+  void-fall-teleport: true
+  no-alts: true
+  maintenance-mode: false
+  scoreboard: true
+  tab: true

@@ -1,0 +1,18 @@
+name: PBLobbyCore
+version: 1.7
+main: org.pablito.pBLobbyCore.PBLobbyCore
+api-version: 1.16
+authors: [Pablito]
+description: A lobby management plugin.
+
+commands:
+  pblcore:
+    description: Comandos de administración para el plugin.
+    usage: /pblcore <command>
+    permission: pblcore.admin
+    aliases: [pblc, lc]
+
+permissions:
+  pblcore.admin:
+    description: Permite recargar el plugin.
+    default: op

@@ -1,0 +1,57 @@
+language: 'en'
+
+blocked_commands:
+  - 'op'
+  - 'pl'
+  - 'plugins'
+  - 'ver'
+  - 'version'
+
+pvp-bypass-players:
+  - 'Player1'
+  - 'Player2'
+
+blockplace-bypass-players:
+  - 'Player1'
+  - 'Player2'
+
+blockbreak-bypass-players:
+  - 'Player1'
+  - 'Player2'
+
+## Maintenance Mode Module
+
+maintenance:
+  whitelist:
+    - 'Player1'
+    - 'Player2'
+
+## Scoreabord Module
+
+scoreboard:
+  title: "&b&lYourServer"
+  update-interval: 20
+  lines:
+    - ""
+    - "&6Player: &e%player_name%"
+    - "&6Rank: &e%vault_prefix%"
+    - "&6Balance: &e%vault_eco_balance%"
+    - ""
+    - "&7web.yourdomain.com"
+
+# TAB Module
+tab:
+  # TAB update interval in ticks (20 ticks = 1 second)
+  update-interval: 20
+
+  tab-header:
+    - "&6&lWELCOME TO MY SERVER"
+    - "&f"
+    - "&eOnline Players: &a%server_online%"
+    - "&f"
+
+  tab-footer:
+    - "&f"
+    - "&b¡Enjoy your experience with PB-LobbyCore!"
+    - "&f"
+    - "&cDiscord: &fdiscord.gg/rHbzfuvG6f"
