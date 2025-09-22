@@ -1,5 +1,5 @@
 name: PBLobbyCore
-version: 1.7
+version: 1.8
 main: org.pablito.pBLobbyCore.PBLobbyCore
 api-version: 1.16
 authors: [Pablito]
@@ -11,8 +11,20 @@ commands:
     usage: /pblcore <command>
     permission: pblcore.admin
     aliases: [pblc, lc]
+  lock:
+    description: Bloquea el chat globalmente.
+    permission: pblcore.chatlock.use
+  unlock:
+    description: Desbloquea el chat globalmente.
+    permission: pblcore.chatlock.use
 
 permissions:
   pblcore.admin:
     description: Permite recargar el plugin.
+    default: op
+  pblcore.chatlock.use:
+    description: Permite bloquear y desbloquear el chat.
+    default: op
+  pblcore.chatlock.bypass:
+    description: Permite hablar en el chat aunque esté bloqueado.
     default: op

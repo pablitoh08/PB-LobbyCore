@@ -55,3 +55,8 @@ tab:
     - "&b¡Enjoy your experience with PB-LobbyCore!"
     - "&f"
     - "&cDiscord: &fdiscord.gg/rHbzfuvG6f"
+
+# Chat Locker Module
+chat-bypass-players:
+  - 'Player1'
+  - 'Player2'

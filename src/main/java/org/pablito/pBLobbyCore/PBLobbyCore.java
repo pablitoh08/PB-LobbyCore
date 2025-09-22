@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.pablito.pBLobbyCore.commands.LockChatCommand;
 import org.pablito.pBLobbyCore.commands.PBLobbyCoreCommand;
 import org.pablito.pBLobbyCore.commands.PBLobbyCoreTabCompleter;
 import org.pablito.pBLobbyCore.listeners.*;
@@ -31,6 +32,8 @@ public final class PBLobbyCore extends JavaPlugin {
     private BukkitTask maintenanceCheckerTask;
     private ScoreboardManager scoreboardManager;
     private TabManager tabManager;
+
+    private boolean chatLocked = false;
 
     @Override
     public void onEnable() {
@@ -84,6 +87,9 @@ public final class PBLobbyCore extends JavaPlugin {
 
         Objects.requireNonNull(this.getCommand("pblcore")).setExecutor(new PBLobbyCoreCommand(this, this.messageManager));
         Objects.requireNonNull(this.getCommand("pblcore")).setTabCompleter(new PBLobbyCoreTabCompleter(this));
+
+        Objects.requireNonNull(this.getCommand("lock")).setExecutor(new LockChatCommand(this, this.messageManager));
+        Objects.requireNonNull(this.getCommand("unlock")).setExecutor(new LockChatCommand(this, this.messageManager));
 
         loadModules();
     }
@@ -198,6 +204,8 @@ public final class PBLobbyCore extends JavaPlugin {
         boolean isMaintenanceModeEnabled = modulesConfig.getBoolean("modules.maintenance-mode", false);
         boolean isScoreboardEnabled = modulesConfig.getBoolean("modules.scoreboard", false);
         boolean isTabEnabled = modulesConfig.getBoolean("modules.tab", false);
+        boolean isChatLockEnabled = modulesConfig.getBoolean("modules.chat-lock", false);
+
 
         if (isWhitelistEnabled) {
             getServer().getPluginManager().registerEvents(new WhitelistListener(this, messageManager), this);
@@ -247,6 +255,9 @@ public final class PBLobbyCore extends JavaPlugin {
         if (isTabEnabled) {
             this.tabManager = new TabManager(this);
             this.tabManager.startTabUpdater();
+        }
+        if (isChatLockEnabled) {
+            getServer().getPluginManager().registerEvents(new ChatLockListener(this, messageManager), this);
         }
     }
 
@@ -309,5 +320,13 @@ public final class PBLobbyCore extends JavaPlugin {
             config.set("alt-ip-exceptions", new ArrayList<String>());
             saveConfig();
         }
+    }
+
+    public boolean isChatLocked() {
+        return chatLocked;
+    }
+
+    public void setChatLocked(boolean chatLocked) {
+        this.chatLocked = chatLocked;
     }
 }

@@ -29,3 +29,6 @@ messages:
   maintenance-off: "&cO modo de manutenção foi desativado."
   maintenance-usage: "&cUso: /pblcore maintenance [on|off]"
   module-disabled: "&cEste módulo está desativado na configuração."
+  chat-locked: "%prefix% &c❌ O chat está atualmente bloqueado."
+  chat-locked-enabled: "%prefix% &a✅ O chat foi bloqueado."
+  chat-locked-disabled: "%prefix% &c❌ O chat foi desbloqueado."

@@ -15,7 +15,7 @@ public class PBLobbyCoreTabCompleter implements TabCompleter {
 
     private final PBLobbyCore plugin;
 
-    private static final List<String> MAIN_COMMANDS = new ArrayList<>(List.of("reload", "setspawn", "alt"));
+    private static final List<String> MAIN_COMMANDS = new ArrayList<>(List.of("reload", "setspawn", "alt", "lock", "unlock"));
     private static final List<String> ALT_SUBCOMMANDS = List.of("add", "remove");
     private static final List<String> MAINTENANCE_SUBCOMMANDS = List.of("on", "off");
 
@@ -29,15 +29,26 @@ public class PBLobbyCoreTabCompleter implements TabCompleter {
             return Collections.emptyList();
         }
 
-        // Si el módulo de mantenimiento está activo, se añade a la lista de comandos principales
         if (plugin.getModulesConfig().getBoolean("modules.maintenance-mode")) {
             if (!MAIN_COMMANDS.contains("maintenance")) {
                 MAIN_COMMANDS.add("maintenance");
             }
         } else {
-            // Si el módulo está desactivado, se asegura de que no esté en la lista para el autocompletado
             MAIN_COMMANDS.remove("maintenance");
         }
+
+        if (plugin.getModulesConfig().getBoolean("modules.chat-lock")) {
+            if (!MAIN_COMMANDS.contains("lock")) {
+                MAIN_COMMANDS.add("lock");
+            }
+            if (!MAIN_COMMANDS.contains("unlock")) {
+                MAIN_COMMANDS.add("unlock");
+            }
+        } else {
+            MAIN_COMMANDS.remove("lock");
+            MAIN_COMMANDS.remove("unlock");
+        }
+
 
         if (args.length == 1) {
             List<String> completions = new ArrayList<>();

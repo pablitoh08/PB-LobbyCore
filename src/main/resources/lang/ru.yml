@@ -29,3 +29,6 @@ messages:
   maintenance-off: "&cРежим обслуживания деактивирован."
   maintenance-usage: "&cИспользование: /pblcore maintenance [on|off]"
   module-disabled: "&cЭтот модуль отключён в настройках."
+  chat-locked: "%prefix% &c❌ Чат в настоящее время заблокирован."
+  chat-locked-enabled: "%prefix% &a✅ Чат был заблокирован."
+  chat-locked-disabled: "%prefix% &c❌ Чат был разблокирован."

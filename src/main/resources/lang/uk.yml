@@ -29,3 +29,6 @@ messages:
   maintenance-off: "&cРежим техобслуговування вимкнено."
   maintenance-usage: "&cВикористання: /pblcore maintenance [on|off]"
   module-disabled: "&cЦей модуль вимкнено у конфігурації."
+  chat-locked: "%prefix% &c❌ Чат наразі заблоковано."
+  chat-locked-enabled: "%prefix% &a✅ Чат було заблоковано."
+  chat-locked-disabled: "%prefix% &c❌ Чат було розблоковано."
