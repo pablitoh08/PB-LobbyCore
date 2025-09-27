@@ -60,3 +60,6 @@ tab:
 chat-bypass-players:
   - 'Player1'
   - 'Player2'
+
+# DON'T TOUCH THIS
+config-version: 1.9

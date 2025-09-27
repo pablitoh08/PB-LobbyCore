@@ -1,5 +1,5 @@
 name: PBLobbyCore
-version: 1.8
+version: 1.9
 main: org.pablito.pBLobbyCore.PBLobbyCore
 api-version: 1.16
 authors: [Pablito]
@@ -17,6 +17,14 @@ commands:
   unlock:
     description: Desbloquea el chat globalmente.
     permission: pblcore.chatlock.use
+  announce:
+    description: Send a global announce.
+    usage: /<command> [message]
+    permission: pblcore.command.announce
+  broadcast:
+    description: /announce Alias.
+    usage: /<command> [message]
+    permission: pblcore.command.announce
 
 permissions:
   pblcore.admin:

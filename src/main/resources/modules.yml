@@ -15,3 +15,7 @@ modules:
   scoreboard: true
   tab: true
   chat-lock: true
+  chat-announcements: true
+
+# DON'T TOUCH THIS
+config-version: 1.9

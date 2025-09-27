@@ -32,3 +32,5 @@ messages:
   chat-locked: "%prefix% &c❌ O chat está atualmente bloqueado."
   chat-locked-enabled: "%prefix% &a✅ O chat foi bloqueado."
   chat-locked-disabled: "%prefix% &c❌ O chat foi desbloqueado."
+  announce-prefix: "<gradient:#00DCFF:#FFAC00><bold>» ANÚNCIO »</bold></gradient> <gray>"
+  announce-usage: "<red>Uso correto: /announce [mensagem]"

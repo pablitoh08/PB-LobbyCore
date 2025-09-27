@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.pablito.pBLobbyCore.commands.AnnounceCommand;
 import org.pablito.pBLobbyCore.commands.LockChatCommand;
 import org.pablito.pBLobbyCore.commands.PBLobbyCoreCommand;
 import org.pablito.pBLobbyCore.commands.PBLobbyCoreTabCompleter;
@@ -18,11 +19,16 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public final class PBLobbyCore extends JavaPlugin {
+
+    private static final double CURRENT_CONFIG_VERSION = 1.9;
+    private static final double CURRENT_MODULES_VERSION = 1.9;
 
     private FileConfiguration modulesConfig;
     private File modulesFile;
@@ -72,6 +78,7 @@ public final class PBLobbyCore extends JavaPlugin {
         }
 
         this.reloadConfig();
+        this.migrateMainConfig();
         this.loadModulesConfig();
         this.loadWhitelistConfig();
 
@@ -117,9 +124,48 @@ public final class PBLobbyCore extends JavaPlugin {
 
     private void loadAllConfigs() {
         this.saveDefaultConfig();
+        this.migrateMainConfig();
+
         this.loadModulesConfig();
         this.loadWhitelistConfig();
         this.saveLanguageFiles();
+    }
+
+    private void migrateMainConfig() {
+        double currentVersion = this.getConfig().getDouble("config-version", 1.9);
+
+        if (currentVersion < CURRENT_CONFIG_VERSION) {
+            getLogger().info("[PBLobbyCore] Updating config.yml from version " + currentVersion + " to " + CURRENT_CONFIG_VERSION + "...");
+
+            this.getConfig().set("config-version", CURRENT_CONFIG_VERSION);
+            this.saveConfig();
+            getLogger().info("[PBLobbyCore] config.yml updated successfully to version " + CURRENT_CONFIG_VERSION + ".");
+
+        } else if (currentVersion > CURRENT_CONFIG_VERSION) {
+            getLogger().warning("[PBLobbyCore] config.yml has a newer version (" + currentVersion + ") than the plugin supports (" + CURRENT_CONFIG_VERSION + "). Using it, but be cautious.");
+        }
+    }
+
+    private void migrateModulesConfig() {
+        double currentVersion = this.modulesConfig.getDouble("config-version", 1.0);
+
+        if (currentVersion < CURRENT_MODULES_VERSION) {
+            getLogger().info("[PBLobbyCore] Updating modules.yml from version " + currentVersion + " to " + CURRENT_MODULES_VERSION + "...");
+
+            if (currentVersion < 1.8) {
+                if (!this.modulesConfig.contains("modules.chat-announcements")) {
+                    this.modulesConfig.set("modules.chat-announcements", true);
+                    getLogger().info("[PBLobbyCore] Added 'modules.chat-announcements: true' (v1.8 update).");
+                }
+            }
+
+            this.modulesConfig.set("config-version", CURRENT_MODULES_VERSION);
+            saveModulesConfig();
+            getLogger().info("[PBLobbyCore] modules.yml updated successfully to version " + CURRENT_MODULES_VERSION + ".");
+
+        } else if (currentVersion > CURRENT_MODULES_VERSION) {
+            getLogger().warning("[PBLobbyCore] modules.yml has a newer version (" + currentVersion + ") than the plugin supports (" + CURRENT_MODULES_VERSION + "). Using it, but be cautious.");
+        }
     }
 
     public void loadWhitelistConfig() {
@@ -130,16 +176,37 @@ public final class PBLobbyCore extends JavaPlugin {
         this.whitelistConfig = YamlConfiguration.loadConfiguration(this.whitelistFile);
     }
 
-    public FileConfiguration getWhitelistConfig() {
-        return this.whitelistConfig;
-    }
+    private FileConfiguration loadConfigAndCopyMissingKeys(String fileName, boolean saveConfig) {
+        File file = new File(getDataFolder(), fileName);
 
-    public void saveWhitelistConfig() {
-        try {
-            this.whitelistConfig.save(this.whitelistFile);
-        } catch (IOException e) {
-            getLogger().severe("Whitelist configuration could not be saved: " + e.getMessage());
+        if (!file.exists()) {
+            saveResource(fileName, false);
         }
+
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+        YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
+                new InputStreamReader(getResource(fileName), StandardCharsets.UTF_8)
+        );
+
+        boolean changed = false;
+        for (String key : defaultConfig.getKeys(true)) {
+            if (!config.contains(key)) {
+                config.set(key, defaultConfig.get(key));
+                changed = true;
+            }
+        }
+
+        if (changed && saveConfig) {
+            try {
+                config.save(file);
+                getLogger().info("[PBLobbyCore] Updated configuration file: " + fileName + " (missing keys added).");
+            } catch (IOException e) {
+                getLogger().severe("Could not save " + fileName + ": " + e.getMessage());
+            }
+        }
+
+        return config;
     }
 
     private void saveLanguageFiles() {
@@ -148,46 +215,33 @@ public final class PBLobbyCore extends JavaPlugin {
             langFolder.mkdirs();
         }
 
-        File esFile = new File(langFolder, "es.yml");
-        if (!esFile.exists()) {
-            saveResource("lang/es.yml", false);
-        }
+        String[] languageFiles = {
+                "lang/es.yml",
+                "lang/en.yml",
+                "lang/fr.yml",
+                "lang/de.yml",
+                "lang/pl.yml",
+                "lang/pr.yml",
+                "lang/ru.yml",
+                "lang/uk.yml"
+        };
 
-        File enFile = new File(langFolder, "en.yml");
-        if (!enFile.exists()) {
-            saveResource("lang/en.yml", false);
-        }
-
-        File frFile = new File(langFolder, "fr.yml");
-        if(!frFile.exists()) {
-            saveResource("lang/fr.yml", false);
-        }
-
-        File deFile = new File(langFolder, "de.yml");
-        if(!deFile.exists()) {
-            saveResource("lang/de.yml", false);
-        }
-
-        File plFile = new File(langFolder, "pl.yml");
-        if(!plFile.exists()) {
-            saveResource("lang/pl.yml", false);
-        }
-
-        File prFile = new File(langFolder, "pr.yml");
-        if(!prFile.exists()) {
-            saveResource("lang/pr.yml", false);
-        }
-
-        File ruFile = new File(langFolder, "ru.yml");
-        if(!ruFile.exists()) {
-            saveResource("lang/ru.yml", false);
-        }
-
-        File ukFile = new File(langFolder, "uk.yml");
-        if(!ukFile.exists()) {
-            saveResource("lang/uk.yml", false);
+        for (String fileName : languageFiles) {
+            loadConfigAndCopyMissingKeys(fileName, true);
         }
     }
+
+
+    private void loadModulesConfig() {
+        this.modulesFile = new File(getDataFolder(), "modules.yml");
+        if (!this.modulesFile.exists()) {
+            this.saveResource("modules.yml", false);
+        }
+        this.modulesConfig = YamlConfiguration.loadConfiguration(this.modulesFile);
+
+        migrateModulesConfig();
+    }
+
 
     private void loadModules() {
         boolean isWhitelistEnabled = modulesConfig.getBoolean("modules.whitelist", false);
@@ -205,6 +259,7 @@ public final class PBLobbyCore extends JavaPlugin {
         boolean isScoreboardEnabled = modulesConfig.getBoolean("modules.scoreboard", false);
         boolean isTabEnabled = modulesConfig.getBoolean("modules.tab", false);
         boolean isChatLockEnabled = modulesConfig.getBoolean("modules.chat-lock", false);
+        boolean isAnnounceEnabled = modulesConfig.getBoolean("modules.chat-announcements", false);
 
 
         if (isWhitelistEnabled) {
@@ -259,6 +314,11 @@ public final class PBLobbyCore extends JavaPlugin {
         if (isChatLockEnabled) {
             getServer().getPluginManager().registerEvents(new ChatLockListener(this, messageManager), this);
         }
+        if (isAnnounceEnabled) {
+            AnnounceCommand announceCommand = new AnnounceCommand(this, this.messageManager);
+            Objects.requireNonNull(this.getCommand("announce")).setExecutor(announceCommand);
+            Objects.requireNonNull(this.getCommand("broadcast")).setExecutor(announceCommand);
+        }
     }
 
     public MessageManager getMessageManager() {
@@ -296,20 +356,20 @@ public final class PBLobbyCore extends JavaPlugin {
         return this.modulesConfig;
     }
 
+    public void saveWhitelistConfig() {
+        try {
+            this.whitelistConfig.save(this.whitelistFile);
+        } catch (IOException e) {
+            getLogger().severe("Whitelist configuration could not be saved: " + e.getMessage());
+        }
+    }
+
     public void saveModulesConfig() {
         try {
             this.modulesConfig.save(this.modulesFile);
         } catch (IOException e) {
             getLogger().severe("The modules file could not be saved: " + e.getMessage());
         }
-    }
-
-    private void loadModulesConfig() {
-        this.modulesFile = new File(getDataFolder(), "modules.yml");
-        if (!this.modulesFile.exists()) {
-            this.saveResource("modules.yml", false);
-        }
-        this.modulesConfig = YamlConfiguration.loadConfiguration(this.modulesFile);
     }
 
     @Override
@@ -320,6 +380,10 @@ public final class PBLobbyCore extends JavaPlugin {
             config.set("alt-ip-exceptions", new ArrayList<String>());
             saveConfig();
         }
+    }
+
+    public FileConfiguration getWhitelistConfig() {
+        return this.whitelistConfig;
     }
 
     public boolean isChatLocked() {
