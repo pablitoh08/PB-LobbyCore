@@ -1,9 +1,22 @@
 name: PBLobbyCore
-version: 1.9
+version: 2.0
 main: org.pablito.pBLobbyCore.PBLobbyCore
 api-version: 1.16
 authors: [Pablito]
 description: A lobby management plugin.
+softdepend:
+  - WorldGuard
+  - CMI
+  - Essentials
+  - EssentialsSpawn
+  - EssentialsChat
+  - Multiverse-Core
+  - AuthMe
+  - CombatLogX
+  - DeluxeCombat
+  - AAC
+  - Spartan
+load: POSTWORLD
 
 commands:
   pblcore:
@@ -25,6 +38,13 @@ commands:
     description: /announce Alias.
     usage: /<command> [message]
     permission: pblcore.command.announce
+  pvp:
+    description: Alterna tu estado de PvP (opt-in)
+    usage: /<command> [on|off|status]
+    permission: pblcore.pvp
+  pvpdiag:
+    description: Muestra el orden de listeners de daño
+    permission: pblcore.pvp.diag
 
 permissions:
   pblcore.admin:
@@ -35,4 +55,10 @@ permissions:
     default: op
   pblcore.chatlock.bypass:
     description: Permite hablar en el chat aunque esté bloqueado.
+    default: op
+  pblcore.pvp:
+    default: true
+  pblcore.pvp.bypass:
+    default: op
+  pblcore.pvp.diag:
     default: op

@@ -1,36 +1,61 @@
-prefix: "&7[&bPB-LobbyCore&7] "
+prefix: '&7[&bPB-LobbyCore&7] '
 
 messages:
-  not-whitelisted: "&c❌ Nie jesteś na białej liście tego serwera."
-  no-item-drop: "%prefix% &c❌ Nie możesz upuszczać przedmiotów w lobby."
-  no-block-break: "%prefix% &c❌ Nie możesz niszczyć bloków w lobby."
-  no-block-place: "%prefix% &c❌ Nie możesz stawiać bloków w lobby."
-  join_message: "&f[&a+&f] %player%"
-  quit_message: "&f[&c-&f] %player%"
-  command-blocked: "%prefix% &c❌ Nie masz uprawnień, aby używać tej komendy."
-  permission-denied: "%prefix% &c❌ Nie masz uprawnień, aby używać tej komendy."
-  plugin-reloaded: "%prefix% &aPlugin został pomyślnie przeładowany."
-  command-usage: "%prefix% &cUso: /pblcore <komenda>"
-  no-pvp: "%prefix% &c❌ PvP nie jest dozwolone na tym serwerze."
-  no-interact: "%prefix% &c❌ Nie możesz wchodzić w interakcję z tym obiektem."
-  no-console-command: "%prefix% &c❌ Ta komenda może być wykonana tylko przez gracza."
-  spawn-set: "%prefix% &a✅ Punkt odrodzenia został pomyślnie ustawiony!"
-  teleported-to-spawn: "%prefix% &aWpadłeś w pustkę i zostałeś teleportowany do spawnu!"
-  kick-message-same-ip: "&cGracz jest już połączony z twoim adresem IP! (%player_name%)"
-  alt-usage: "&cUso: /pblcore alt <add|remove> <IP>"
-  alt-invalid-ip: "&cPodałeś nieprawidłowy adres IP."
-  alt-ip-already-added: "&cTen adres IP znajduje się już na liście wyjątków."
-  alt-ip-added: "&aAdres IP &e%ip_address% &azostał dodany do listy wyjątków!"
-  alt-ip-not-in-list: "&cTen adres IP nie znajduje się na liście wyjątków."
-  alt-ip-removed: "&aTen adres IP &e%ip_address% &azostał usunięty z listy wyjątków!"
-  alt-ip-removed-recheck: "&aSprawdzam graczy online z adresem IP &e%ip_address%&a..."
-  maintenance-kick-message: "&cSserwer jest w trybie konserwacji. Wróć później!"
-  maintenance-on: "&aTryb konserwacji został włączony."
-  maintenance-off: "&cTryb konserwacji został wyłączony."
-  maintenance-usage: "&cUżycie: /pblcore maintenance [on|off]"
-  module-disabled: "&cTen moduł jest obecnie wyłączony w konfiguracji."
-  chat-locked: "%prefix% &c❌ Czat jest obecnie zablokowany."
-  chat-locked-enabled: "%prefix% &a✅ Czat został zablokowany."
-  chat-locked-disabled: "%prefix% &c❌ Czat został odblokowany."
-  announce-prefix: "<gradient:#00DCFF:#FFAC00><bold>» OGŁOSZENIE »</bold></gradient> <gray>"
-  announce-usage: "<red>Prawidłowe użycie: /announce [wiadomość]"
+  not-whitelisted: '&c❌ Nie jesteś na białej liście tego serwera.'
+  no-item-drop: '%prefix% &c❌ Nie możesz upuszczać przedmiotów w lobby.'
+  no-block-break: '%prefix% &c❌ Nie możesz niszczyć bloków w lobby.'
+  no-block-place: '%prefix% &c❌ Nie możesz stawiać bloków w lobby.'
+  join_message: '&f[&a+&f] %player%'
+  quit_message: '&f[&c-&f] %player%'
+  command-blocked: '%prefix% &c❌ Nie masz uprawnień, aby używać tej komendy.'
+  permission-denied: '%prefix% &c❌ Nie masz uprawnień, aby używać tej komendy.'
+  plugin-reloaded: '%prefix% &aPlugin został pomyślnie przeładowany.'
+  command-usage: '%prefix% &cUso: /pblcore <komenda>'
+  no-pvp: '%prefix% &c❌ PvP nie jest dozwolone na tym serwerze.'
+  no-interact: '%prefix% &c❌ Nie możesz wchodzić w interakcję z tym obiektem.'
+  no-console-command: '%prefix% &c❌ Ta komenda może być wykonana tylko przez gracza.'
+  spawn-set: '%prefix% &a✅ Punkt odrodzenia został pomyślnie ustawiony!'
+  teleported-to-spawn: '%prefix% &aWpadłeś w pustkę i zostałeś teleportowany do spawnu!'
+  kick-message-same-ip: '&cGracz jest już połączony z twoim adresem IP! (%player_name%)'
+  alt-usage: '&cUso: /pblcore alt <add|remove> <IP>'
+  alt-invalid-ip: '&cPodałeś nieprawidłowy adres IP.'
+  alt-ip-already-added: '&cTen adres IP znajduje się już na liście wyjątków.'
+  alt-ip-added: '&aAdres IP &e%ip_address% &azostał dodany do listy wyjątków!'
+  alt-ip-not-in-list: '&cTen adres IP nie znajduje się na liście wyjątków.'
+  alt-ip-removed: '&aTen adres IP &e%ip_address% &azostał usunięty z listy wyjątków!'
+  alt-ip-removed-recheck: '&aSprawdzam graczy online z adresem IP &e%ip_address%&a...'
+  maintenance-kick-message: '&cSserwer jest w trybie konserwacji. Wróć później!'
+  maintenance-on: '&aTryb konserwacji został włączony.'
+  maintenance-off: '&cTryb konserwacji został wyłączony.'
+  maintenance-usage: '&cUżycie: /pblcore maintenance [on|off]'
+  module-disabled: '&cTen moduł jest obecnie wyłączony w konfiguracji.'
+  chat-locked: '%prefix% &c❌ Czat jest obecnie zablokowany.'
+  chat-locked-enabled: '%prefix% &a✅ Czat został zablokowany.'
+  chat-locked-disabled: '%prefix% &c❌ Czat został odblokowany.'
+  announce-prefix: <gradient:#00DCFF:#FFAC00><bold>» OGŁOSZENIE »</bold></gradient>
+    <gray>
+  announce-usage: '<red>Prawidłowe użycie: /announce [wiadomość]'
+  pvp-enabled: '%prefix% &aWłączyłeś swój PvP. &7(Użyj &e/pvp&7, aby wyłączyć)'
+  pvp-disabled: '%prefix% &cWyłączyłeś swój PvP.'
+  pvp-status-on: '%prefix% &aTwój PvP jest &lWŁĄCZONY&a.'
+  pvp-status-off: '%prefix% &eTwój PvP jest &lWYŁĄCZONY&e.'
+  pvp-toggle-not-allowed: '%prefix% &cUżycie /pvp jest wyłączone w konfiguracji.'
+  pvp-module-disabled: '%prefix% &eModuł no-pvp nie jest aktywny.'
+  pvp-cooldown: '%prefix% &cMusisz poczekać &e%seconds%s &cprzed ponownym użyciem
+    &e/pvp&c.'
+  pvp-require-mutual: '%prefix% &eAby zadawać obrażenia, obaj gracze muszą mieć włączony
+    PvP (&e/pvp&e).'
+
+  log.plugin.enabled: '%prefix% &aPBLobbyCore włączony pomyślnie.'
+  log.plugin.disabled: '%prefix% &cPBLobbyCore wyłączony.'
+  log.plugin.reloaded: '%prefix% &eKonfiguracje przeładowane i wykonawcy przypisani ponownie.'
+  log.command.missing_pblcore: '%prefix% &cNie znaleziono komendy ''pblcore'' w plugin.yml'
+  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener załadowany (maintenance-mode).'
+  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener załadowany.'
+  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener załadowany (opt-in /pvp).'
+  log.bstats.failed: '%prefix% &c[bStats] Nie udało się zainicjalizować: '
+  log.file.create_failed_modules: '%prefix% &cNie można utworzyć modules.yml: '
+  log.file.create_failed_whitelist: '%prefix% &cNie można utworzyć whitelist.yml: '
+  log.file.save_failed_modules: '%prefix% &cNie można zapisać modules.yml: '
+  log.file.save_failed_whitelist: '%prefix% &cNie można zapisać whitelist.yml: '
+  log.spawn.save_failed_null: '%prefix% &cNie można zapisać spawnu: null location/world.'

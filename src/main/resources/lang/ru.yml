@@ -1,36 +1,61 @@
-prefix: "&7[&bPB-LobbyCore&7] "
+prefix: '&7[&bPB-LobbyCore&7] '
 
 messages:
-  not-whitelisted: "&c❌ Вы не в белом списке этого сервера."
-  no-item-drop: "%prefix% &c❌ Вы не можете выбрасывать предметы в лобби."
-  no-block-break: "%prefix% &c❌ Вы не можете ломать блоки в лобби."
-  no-block-place: "%prefix% &c❌ Вы не можете размещать блоки в лобби."
-  join_message: "&f[&a+&f] %player%"
-  quit_message: "&f[&c-&f] %player%"
-  command-blocked: "%prefix% &c❌ У вас нет прав использовать эту команду."
-  permission-denied: "%prefix% &c❌ У вас нет прав использовать эту команду."
-  plugin-reloaded: "%prefix% &aПлагин успешно перезагружен."
-  command-usage: "%prefix% &cИспользование: /pblcore <команда>"
-  no-pvp: "%prefix% &c❌ PvP не разрешен на этом сервере."
-  no-interact: "%prefix% &c❌ Вы не можете взаимодействовать с этим объектом."
-  no-console-command: "%prefix% &c❌ Эта команда может быть выполнена только игроком."
-  spawn-set: "%prefix% &a✅ Точка спауна успешно установлена!"
-  teleported-to-spawn: "%prefix% &aВы упали в бездну и были телепортированы на спаун!"
-  kick-message-same-ip: "&cИгрок с вашим IP уже подключен! (%player_name%)"
-  alt-usage: "&cИспользование: /pblcore alt <add|remove> <ip>"
-  alt-invalid-ip: "&cУказан неверный IP-адрес."
-  alt-ip-already-added: "&cЭтот IP-адрес уже находится в списке исключений."
-  alt-ip-added: "&aIP-адрес &e%ip_address% &aдобавлен в список исключений!"
-  alt-ip-not-in-list: "&cЭтот IP-адрес отсутствует в списке исключений."
-  alt-ip-removed: "&aIP-адрес &e%ip_address% &aудален из списка исключений!"
-  alt-ip-removed-recheck: "&aПроверка игроков онлайн с IP &e%ip_address%&a..."
-  maintenance-kick-message: "&cСервер находится в режиме обслуживания. Зайдите позже!"
-  maintenance-on: "&aРежим обслуживания активирован."
-  maintenance-off: "&cРежим обслуживания деактивирован."
-  maintenance-usage: "&cИспользование: /pblcore maintenance [on|off]"
-  module-disabled: "&cЭтот модуль отключён в настройках."
-  chat-locked: "%prefix% &c❌ Чат в настоящее время заблокирован."
-  chat-locked-enabled: "%prefix% &a✅ Чат был заблокирован."
-  chat-locked-disabled: "%prefix% &c❌ Чат был разблокирован."
-  announce-prefix: "<gradient:#00DCFF:#FFAC00><bold>» ОБЪЯВЛЕНИЕ »</bold></gradient> <gray>"
-  announce-usage: "<red>Правильное использование: /announce [сообщение]"
+  not-whitelisted: '&c❌ Вы не в белом списке этого сервера.'
+  no-item-drop: '%prefix% &c❌ Вы не можете выбрасывать предметы в лобби.'
+  no-block-break: '%prefix% &c❌ Вы не можете ломать блоки в лобби.'
+  no-block-place: '%prefix% &c❌ Вы не можете размещать блоки в лобби.'
+  join_message: '&f[&a+&f] %player%'
+  quit_message: '&f[&c-&f] %player%'
+  command-blocked: '%prefix% &c❌ У вас нет прав использовать эту команду.'
+  permission-denied: '%prefix% &c❌ У вас нет прав использовать эту команду.'
+  plugin-reloaded: '%prefix% &aПлагин успешно перезагружен.'
+  command-usage: '%prefix% &cИспользование: /pblcore <команда>'
+  no-pvp: '%prefix% &c❌ PvP не разрешен на этом сервере.'
+  no-interact: '%prefix% &c❌ Вы не можете взаимодействовать с этим объектом.'
+  no-console-command: '%prefix% &c❌ Эта команда может быть выполнена только игроком.'
+  spawn-set: '%prefix% &a✅ Точка спауна успешно установлена!'
+  teleported-to-spawn: '%prefix% &aВы упали в бездну и были телепортированы на спаун!'
+  kick-message-same-ip: '&cИгрок с вашим IP уже подключен! (%player_name%)'
+  alt-usage: '&cИспользование: /pblcore alt <add|remove> <ip>'
+  alt-invalid-ip: '&cУказан неверный IP-адрес.'
+  alt-ip-already-added: '&cЭтот IP-адрес уже находится в списке исключений.'
+  alt-ip-added: '&aIP-адрес &e%ip_address% &aдобавлен в список исключений!'
+  alt-ip-not-in-list: '&cЭтот IP-адрес отсутствует в списке исключений.'
+  alt-ip-removed: '&aIP-адрес &e%ip_address% &aудален из списка исключений!'
+  alt-ip-removed-recheck: '&aПроверка игроков онлайн с IP &e%ip_address%&a...'
+  maintenance-kick-message: '&cСервер находится в режиме обслуживания. Зайдите позже!'
+  maintenance-on: '&aРежим обслуживания активирован.'
+  maintenance-off: '&cРежим обслуживания деактивирован.'
+  maintenance-usage: '&cИспользование: /pblcore maintenance [on|off]'
+  module-disabled: '&cЭтот модуль отключён в настройках.'
+  chat-locked: '%prefix% &c❌ Чат в настоящее время заблокирован.'
+  chat-locked-enabled: '%prefix% &a✅ Чат был заблокирован.'
+  chat-locked-disabled: '%prefix% &c❌ Чат был разблокирован.'
+  announce-prefix: <gradient:#00DCFF:#FFAC00><bold>» ОБЪЯВЛЕНИЕ »</bold></gradient>
+    <gray>
+  announce-usage: '<red>Правильное использование: /announce [сообщение]'
+  pvp-enabled: '%prefix% &aВы включили свой PvP. &7(Используйте &e/pvp&7, чтобы отключить)'
+  pvp-disabled: '%prefix% &cВы отключили свой PvP.'
+  pvp-status-on: '%prefix% &aВаш PvP &lВКЛЮЧЕН&a.'
+  pvp-status-off: '%prefix% &eВаш PvP &lВЫКЛЮЧЕН&e.'
+  pvp-toggle-not-allowed: '%prefix% &cИспользование /pvp отключено в конфигурации.'
+  pvp-module-disabled: '%prefix% &eМодуль no-pvp не активен.'
+  pvp-cooldown: '%prefix% &cНужно подождать &e%seconds%s &cперед повторным использованием
+    &e/pvp&c.'
+  pvp-require-mutual: '%prefix% &eЧтобы наносить урон, у обоих игроков должен быть
+    включен PvP (&e/pvp&e).'
+
+  log.plugin.enabled: '%prefix% &aPBLobbyCore успешно включён.'
+  log.plugin.disabled: '%prefix% &cPBLobbyCore выключен.'
+  log.plugin.reloaded: '%prefix% &eКонфиги перезагружены и исполнители назначены заново.'
+  log.command.missing_pblcore: '%prefix% &cКоманда ''pblcore'' не найдена в plugin.yml'
+  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener загружен (maintenance-mode).'
+  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener загружен.'
+  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener загружен (opt-in /pvp).'
+  log.bstats.failed: '%prefix% &c[bStats] Не удалось инициализировать: '
+  log.file.create_failed_modules: '%prefix% &cНе удалось создать modules.yml: '
+  log.file.create_failed_whitelist: '%prefix% &cНе удалось создать whitelist.yml: '
+  log.file.save_failed_modules: '%prefix% &cНе удалось сохранить modules.yml: '
+  log.file.save_failed_whitelist: '%prefix% &cНе удалось сохранить whitelist.yml: '
+  log.spawn.save_failed_null: '%prefix% &cНе удалось сохранить спавн: location/world = null.'

@@ -1,5 +1,14 @@
 language: 'en'
 
+## No-PvP Module (configurable)
+no-pvp:
+  allow-pvp-toggle: true
+  require-mutual-consent: true
+  save-toggle-on-restart: false
+  cooldown-seconds: 0
+  bypass-respects-toggle: true
+  force-override-external: true
+
 blocked_commands:
   - 'op'
   - 'pl'
@@ -62,4 +71,4 @@ chat-bypass-players:
   - 'Player2'
 
 # DON'T TOUCH THIS
-config-version: 1.9
+config-version: 2
