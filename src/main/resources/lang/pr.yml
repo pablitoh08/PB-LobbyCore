@@ -1,5 +1,4 @@
 prefix: '&7[&bPB-LobbyCore&7] '
-
 messages:
   not-whitelisted: '&c❌ Você não está na lista branca deste servidor.'
   no-item-drop: '%prefix% &c❌ Você não pode descartar itens no lobby.'
@@ -44,17 +43,17 @@ messages:
     novamente.'
   pvp-require-mutual: '%prefix% &ePara causar dano, ambos os jogadores devem ter o
     PvP ativado (&e/pvp&e).'
-
-  log.plugin.enabled: '%prefix% &aPBLobbyCore ativado com sucesso.'
-  log.plugin.disabled: '%prefix% &cPBLobbyCore desativado.'
-  log.plugin.reloaded: '%prefix% &eConfigs recarregadas e executores reatribuídos.'
-  log.command.missing_pblcore: '%prefix% &cComando ''pblcore'' não encontrado no plugin.yml'
-  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener carregado (maintenance-mode).'
-  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener carregado.'
-  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener carregado (opt-in /pvp).'
-  log.bstats.failed: '%prefix% &c[bStats] Não foi possível inicializar: '
-  log.file.create_failed_modules: '%prefix% &cNão foi possível criar modules.yml: '
-  log.file.create_failed_whitelist: '%prefix% &cNão foi possível criar whitelist.yml: '
-  log.file.save_failed_modules: '%prefix% &cNão foi possível salvar modules.yml: '
-  log.file.save_failed_whitelist: '%prefix% &cNão foi possível salvar whitelist.yml: '
-  log.spawn.save_failed_null: '%prefix% &cNão foi possível salvar o spawn: location/world nulos.'
+  hide.module.no_permission: '&cVocê não tem permissão para fazer isso.'
+  hide.module.usage: '&eUso: /hideplayers <on|off|toggle|status>'
+  hide.module.enabled: '%prefix% &aMódulo de ocultar jogadores &aativado&7.'
+  hide.module.disabled: '%prefix% &cMódulo de ocultar jogadores &cdesativado&7.'
+  hide.module.status_on: '%prefix% &aOcultar jogadores: &aATIVADO&7.'
+  hide.module.status_off: '%prefix% &cOcultar jogadores: &cDESATIVADO&7.'
+  hide.bypass.no_permission: '&cVocê não tem permissão para usar o bypass.'
+  hide.bypass.usage: '&eUso: /hidebypass <on|off|toggle|status>'
+  hide.bypass.enabled: '%prefix% &aBypass ativado&7. Você não será ocultado e poderá
+    ver todos.'
+  hide.bypass.disabled: '%prefix% &cBypass desativado&7. Você será tratado como um
+    jogador normal.'
+  hide.bypass.status_on: '%prefix% &aBypass: &aATIVADO&7.'
+  hide.bypass.status_off: '%prefix% &cBypass: &cDESATIVADO&7.'

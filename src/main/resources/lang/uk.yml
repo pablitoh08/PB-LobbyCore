@@ -1,5 +1,4 @@
 prefix: '&7[&bPB-LobbyCore&7] '
-
 messages:
   not-whitelisted: '&c❌ Ви не в білому списку цього сервера.'
   no-item-drop: '%prefix% &c❌ Ви не можете скидати предмети у лобі.'
@@ -46,17 +45,17 @@ messages:
     &e/pvp&c.'
   pvp-require-mutual: '%prefix% &eЩоб завдавати шкоди, обидва гравці мають увімкнути
     PvP (&e/pvp&e).'
-
-  log.plugin.enabled: '%prefix% &aPBLobbyCore успішно увімкнено.'
-  log.plugin.disabled: '%prefix% &cPBLobbyCore вимкнено.'
-  log.plugin.reloaded: '%prefix% &eКонфіги перезавантажено та виконавці перепризначені.'
-  log.command.missing_pblcore: '%prefix% &cКоманду ''pblcore'' не знайдено в plugin.yml'
-  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener завантажено (maintenance-mode).'
-  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener завантажено.'
-  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener завантажено (opt-in /pvp).'
-  log.bstats.failed: '%prefix% &c[bStats] Не вдалося ініціалізувати: '
-  log.file.create_failed_modules: '%prefix% &cНе вдалося створити modules.yml: '
-  log.file.create_failed_whitelist: '%prefix% &cНе вдалося створити whitelist.yml: '
-  log.file.save_failed_modules: '%prefix% &cНе вдалося зберегти modules.yml: '
-  log.file.save_failed_whitelist: '%prefix% &cНе вдалося зберегти whitelist.yml: '
-  log.spawn.save_failed_null: '%prefix% &cНе вдалося зберегти спавн: location/world = null.'
+  hide.module.no_permission: '&cУ вас немає прав на це.'
+  hide.module.usage: '&eВикористання: /hideplayers <on|off|toggle|status>'
+  hide.module.enabled: '%prefix% &aМодуль приховування гравців &aувімкнено&7.'
+  hide.module.disabled: '%prefix% &cМодуль приховування гравців &cвимкнено&7.'
+  hide.module.status_on: '%prefix% &aПриховування гравців: &aУВІМКНЕНО&7.'
+  hide.module.status_off: '%prefix% &cПриховування гравців: &cВИМКНЕНО&7.'
+  hide.bypass.no_permission: '&cУ вас немає прав для використання bypass.'
+  hide.bypass.usage: '&eВикористання: /hidebypass <on|off|toggle|status>'
+  hide.bypass.enabled: '%prefix% &aBypass увімкнено&7. Вас не будуть приховувати і
+    ви бачитимете всіх.'
+  hide.bypass.disabled: '%prefix% &cBypass вимкнено&7. Ви будете вважатися звичайним
+    гравцем.'
+  hide.bypass.status_on: '%prefix% &aBypass: &aУВІМКНЕНО&7.'
+  hide.bypass.status_off: '%prefix% &cBypass: &cВИМКНЕНО&7.'

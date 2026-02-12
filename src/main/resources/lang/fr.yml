@@ -1,5 +1,4 @@
 prefix: '&7[&bPB-LobbyCore&7] '
-
 messages:
   not-whitelisted: '&c❌ Vous n''êtes pas sur la liste blanche de ce serveur.'
   no-item-drop: '%prefix% &c❌ Vous ne pouvez pas jeter d''objets dans le lobby.'
@@ -53,17 +52,17 @@ messages:
   pvp-cooldown: '%prefix% &cTu dois attendre &e%seconds%s &cavant de réutiliser &e/pvp&c.'
   pvp-require-mutual: '%prefix% &ePour infliger des dégâts, les deux joueurs doivent
     avoir activé le PvP (&e/pvp&e).'
-
-  log.plugin.enabled: '%prefix% &aPBLobbyCore activé avec succès.'
-  log.plugin.disabled: '%prefix% &cPBLobbyCore désactivé.'
-  log.plugin.reloaded: '%prefix% &eConfigs rechargées et exécutants réassignés.'
-  log.command.missing_pblcore: '%prefix% &cCommande ''pblcore'' introuvable dans plugin.yml'
-  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener chargé (maintenance-mode).'
-  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener chargé.'
-  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener chargé (opt-in /pvp).'
-  log.bstats.failed: '%prefix% &c[bStats] Impossible d''initialiser : '
-  log.file.create_failed_modules: '%prefix% &cImpossible de créer modules.yml : '
-  log.file.create_failed_whitelist: '%prefix% &cImpossible de créer whitelist.yml : '
-  log.file.save_failed_modules: '%prefix% &cImpossible d''enregistrer modules.yml : '
-  log.file.save_failed_whitelist: '%prefix% &cImpossible d''enregistrer whitelist.yml : '
-  log.spawn.save_failed_null: '%prefix% &cImpossible d''enregistrer le spawn : location/monde nul.'
+  hide.module.no_permission: '&cVous n''avez pas la permission de faire cela.'
+  hide.module.usage: '&eUtilisation : /hideplayers <on|off|toggle|status>'
+  hide.module.enabled: '%prefix% &aModule de masquage des joueurs &aactivé&7.'
+  hide.module.disabled: '%prefix% &cModule de masquage des joueurs &cdésactivé&7.'
+  hide.module.status_on: '%prefix% &aMasquage des joueurs : &aACTIF&7.'
+  hide.module.status_off: '%prefix% &cMasquage des joueurs : &cINACTIF&7.'
+  hide.bypass.no_permission: '&cVous n''avez pas la permission d''utiliser le bypass.'
+  hide.bypass.usage: '&eUtilisation : /hidebypass <on|off|toggle|status>'
+  hide.bypass.enabled: '%prefix% &aBypass activé&7. Vous ne serez pas masqué et vous
+    verrez tout le monde.'
+  hide.bypass.disabled: '%prefix% &cBypass désactivé&7. Vous serez traité comme un
+    joueur normal.'
+  hide.bypass.status_on: '%prefix% &aBypass : &aACTIF&7.'
+  hide.bypass.status_off: '%prefix% &cBypass : &cINACTIF&7.'

@@ -1,5 +1,4 @@
 prefix: '&7[&bPB-LobbyCore&7] '
-
 messages:
   not-whitelisted: '&c❌ Вы не в белом списке этого сервера.'
   no-item-drop: '%prefix% &c❌ Вы не можете выбрасывать предметы в лобби.'
@@ -45,17 +44,17 @@ messages:
     &e/pvp&c.'
   pvp-require-mutual: '%prefix% &eЧтобы наносить урон, у обоих игроков должен быть
     включен PvP (&e/pvp&e).'
-
-  log.plugin.enabled: '%prefix% &aPBLobbyCore успешно включён.'
-  log.plugin.disabled: '%prefix% &cPBLobbyCore выключен.'
-  log.plugin.reloaded: '%prefix% &eКонфиги перезагружены и исполнители назначены заново.'
-  log.command.missing_pblcore: '%prefix% &cКоманда ''pblcore'' не найдена в plugin.yml'
-  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener загружен (maintenance-mode).'
-  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener загружен.'
-  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener загружен (opt-in /pvp).'
-  log.bstats.failed: '%prefix% &c[bStats] Не удалось инициализировать: '
-  log.file.create_failed_modules: '%prefix% &cНе удалось создать modules.yml: '
-  log.file.create_failed_whitelist: '%prefix% &cНе удалось создать whitelist.yml: '
-  log.file.save_failed_modules: '%prefix% &cНе удалось сохранить modules.yml: '
-  log.file.save_failed_whitelist: '%prefix% &cНе удалось сохранить whitelist.yml: '
-  log.spawn.save_failed_null: '%prefix% &cНе удалось сохранить спавн: location/world = null.'
+  hide.module.no_permission: '&cУ вас нет прав на это.'
+  hide.module.usage: '&eИспользование: /hideplayers <on|off|toggle|status>'
+  hide.module.enabled: '%prefix% &aМодуль скрытия игроков &aвключен&7.'
+  hide.module.disabled: '%prefix% &cМодуль скрытия игроков &cвыключен&7.'
+  hide.module.status_on: '%prefix% &aСкрытие игроков: &aВКЛ&7.'
+  hide.module.status_off: '%prefix% &cСкрытие игроков: &cВЫКЛ&7.'
+  hide.bypass.no_permission: '&cУ вас нет прав для использования обхода.'
+  hide.bypass.usage: '&eИспользование: /hidebypass <on|off|toggle|status>'
+  hide.bypass.enabled: '%prefix% &aОбход включен&7. Вас не будут скрывать и вы будете
+    видеть всех.'
+  hide.bypass.disabled: '%prefix% &cОбход выключен&7. Вы будете считаться обычным
+    игроком.'
+  hide.bypass.status_on: '%prefix% &aОбход: &aВКЛ&7.'
+  hide.bypass.status_off: '%prefix% &cОбход: &cВЫКЛ&7.'

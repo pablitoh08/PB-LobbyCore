@@ -1,5 +1,4 @@
 prefix: '&7[&bPB-LobbyCore&7] '
-
 messages:
   not-whitelisted: '&c❌ No estás en la lista blanca de este servidor.'
   no-item-drop: '%prefix% &c❌ No puedes soltar objetos en el lobby.'
@@ -47,17 +46,33 @@ messages:
   pvp-cooldown: '%prefix% &cDebes esperar &e%seconds%s &cantes de volver a usar &e/pvp&c.'
   pvp-require-mutual: '%prefix% &ePara hacer daño, ambos jugadores deben tener el
     PvP activado (&e/pvp&e).'
-
-  log.plugin.enabled: "%prefix% &aPlugin habilitado."
-  log.plugin.disabled: "%prefix% &cPlugin deshabilitado."
-  log.plugin.reloaded: "%prefix% &eConfigs recargadas."
-  log.bstats.failed: "%prefix% &cNo se pudo inicializar bStats."
-  log.file.create_failed_modules: "%prefix% &cNo se pudo crear modules.yml: "
-  log.file.create_failed_whitelist: "%prefix% &cNo se pudo crear whitelist.yml: "
-  log.file.save_failed_modules: "%prefix% &cNo se pudo guardar modules.yml: "
-  log.file.save_failed_whitelist: "%prefix% &cNo se pudo guardar whitelist.yml: "
-  log.command.missing_pblcore: "%prefix% &cNo se encontró el comando 'pblcore' en plugin.yml"
-  log.listener.loaded_maintenance: "%prefix% &a[Maintenance] Listener cargado."
-  log.listener.loaded_chatlock: "%prefix% &a[ChatLock] Listener cargado."
-  log.listener.loaded_nopvp: "%prefix% &a[No-PvP] Listener cargado."
-  log.spawn.save_failed_null: "%prefix% &cNo se pudo guardar el spawn."
+  log.plugin.enabled: '%prefix% &aPlugin habilitado.'
+  log.plugin.disabled: '%prefix% &cPlugin deshabilitado.'
+  log.plugin.reloaded: '%prefix% &eConfigs recargadas.'
+  log.bstats.failed: '%prefix% &cNo se pudo inicializar bStats.'
+  log.file.create_failed_modules: '%prefix% &cNo se pudo crear modules.yml: '
+  log.file.create_failed_whitelist: '%prefix% &cNo se pudo crear whitelist.yml: '
+  log.file.save_failed_modules: '%prefix% &cNo se pudo guardar modules.yml: '
+  log.file.save_failed_whitelist: '%prefix% &cNo se pudo guardar whitelist.yml: '
+  log.command.missing_pblcore: '%prefix% &cNo se encontró el comando ''pblcore'' en
+    plugin.yml'
+  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener cargado.'
+  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener cargado.'
+  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener cargado.'
+  log.spawn.save_failed_null: '%prefix% &cNo se pudo guardar el spawn.'
+  log.spawn.world_not_loaded: '%prefix% &cEl mundo del spawn no está cargado: '
+  log.chatlock.state: '%prefix% &eEstado del chat actualizado.'
+  hide.module.no_permission: '&cNo tienes permiso para hacer esto.'
+  hide.module.usage: '&eUso: /hideplayers <on|off|toggle|status>'
+  hide.module.enabled: '%prefix% &aMódulo de ocultar jugadores &aactivado&7.'
+  hide.module.disabled: '%prefix% &cMódulo de ocultar jugadores &cdesactivado&7.'
+  hide.module.status_on: '%prefix% &aOcultar jugadores: &aACTIVO&7.'
+  hide.module.status_off: '%prefix% &cOcultar jugadores: &cINACTIVO&7.'
+  hide.bypass.no_permission: '&cNo tienes permiso para usar el bypass.'
+  hide.bypass.usage: '&eUso: /hidebypass <on|off|toggle|status>'
+  hide.bypass.enabled: '%prefix% &aBypass activado&7. No serás ocultado y podrás ver
+    a todos.'
+  hide.bypass.disabled: '%prefix% &cBypass desactivado&7. Serás tratado como un jugador
+    normal.'
+  hide.bypass.status_on: '%prefix% &aBypass: &aACTIVO&7.'
+  hide.bypass.status_off: '%prefix% &cBypass: &cINACTIVO&7.'

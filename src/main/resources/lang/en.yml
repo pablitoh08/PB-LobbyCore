@@ -1,5 +1,4 @@
 prefix: '&7[&bPB-LobbyCore&7] '
-
 messages:
   not-whitelisted: '&c❌ You are not on this server''s whitelist.'
   no-item-drop: '%prefix% &c❌ You cannot drop items in the lobby.'
@@ -48,17 +47,17 @@ messages:
   pvp-cooldown: '%prefix% &cYou must wait &e%seconds%s &cbefore using &e/pvp&c again.'
   pvp-require-mutual: '%prefix% &eTo deal damage, both players must have PvP enabled
     (&e/pvp&e).'
-
-  log.plugin.enabled: '%prefix% &aPBLobbyCore enabled successfully.'
-  log.plugin.disabled: '%prefix% &cPBLobbyCore disabled.'
-  log.plugin.reloaded: '%prefix% &eConfigs reloaded and executors re-assigned.'
-  log.command.missing_pblcore: '%prefix% &cCommand ''pblcore'' not found in plugin.yml'
-  log.listener.loaded_maintenance: '%prefix% &a[Maintenance] Listener loaded (maintenance-mode).'
-  log.listener.loaded_chatlock: '%prefix% &a[ChatLock] Listener loaded.'
-  log.listener.loaded_nopvp: '%prefix% &a[No-PvP] Listener loaded (opt-in /pvp).'
-  log.bstats.failed: '%prefix% &c[bStats] Could not initialize: '
-  log.file.create_failed_modules: '%prefix% &cCould not create modules.yml: '
-  log.file.create_failed_whitelist: '%prefix% &cCould not create whitelist.yml: '
-  log.file.save_failed_modules: '%prefix% &cCould not save modules.yml: '
-  log.file.save_failed_whitelist: '%prefix% &cCould not save whitelist.yml: '
-  log.spawn.save_failed_null: '%prefix% &cCould not save spawn: null location/world.'
+  hide.module.no_permission: '&cYou don''t have permission to do this.'
+  hide.module.usage: '&eUsage: /hideplayers <on|off|toggle|status>'
+  hide.module.enabled: '%prefix% &aHide players module &aenabled&7.'
+  hide.module.disabled: '%prefix% &cHide players module &cdisabled&7.'
+  hide.module.status_on: '%prefix% &aHide players: &aON&7.'
+  hide.module.status_off: '%prefix% &cHide players: &cOFF&7.'
+  hide.bypass.no_permission: '&cYou don''t have permission to use bypass.'
+  hide.bypass.usage: '&eUsage: /hidebypass <on|off|toggle|status>'
+  hide.bypass.enabled: '%prefix% &aBypass enabled&7. You won''t be hidden and you
+    can see everyone.'
+  hide.bypass.disabled: '%prefix% &cBypass disabled&7. You''ll be treated like a normal
+    player.'
+  hide.bypass.status_on: '%prefix% &aBypass: &aON&7.'
+  hide.bypass.status_off: '%prefix% &cBypass: &cOFF&7.'
