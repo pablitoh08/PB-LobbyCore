@@ -1,5 +1,5 @@
 name: PBLobbyCore
-version: 2.1.1
+version: 2.2
 main: org.pablito.pBLobbyCore.PBLobbyCore
 api-version: 1.16
 authors: [Pablito]
@@ -20,15 +20,15 @@ load: POSTWORLD
 
 commands:
   pblcore:
-    description: Comandos de administración para el plugin.
+    description: Admin commands for the plugin.
     usage: /pblcore <command>
     permission: pblcore.admin
     aliases: [pblc, lc]
   lock:
-    description: Bloquea el chat globalmente.
+    description: Locks the global chat.
     permission: pblcore.chatlock.use
   unlock:
-    description: Desbloquea el chat globalmente.
+    description: Unlocks the global chat.
     permission: pblcore.chatlock.use
   announce:
     description: Send a global announce.
@@ -39,30 +39,37 @@ commands:
     usage: /<command> [message]
     permission: pblcore.command.announce
   pvp:
-    description: Alterna tu estado de PvP (opt-in)
+    description: Toggle your PvP state (opt-in)
     usage: /<command> [on|off|status]
     permission: pblcore.pvp
   pvpdiag:
-    description: Muestra el orden de listeners de daño
+    description: Shows damage listener order
     permission: pblcore.pvp.diag
   hideplayers:
-    description: Activa/desactiva el módulo de ocultar jugadores.
+    description: Enable/disable the hide players module.
     usage: /<command> <on|off|toggle|status>
     permission: pblcore.hideplayers.admin
   hidebypass:
-    description: Activa/desactiva tu bypass de ocultar jugadores (solo sesión).
+    description: Enable/disable your hide players bypass (session-only).
     usage: /<command> <on|off|toggle|status>
     permission: pblcore.hideplayers.bypass.toggle
+  weatherlock:
+    description: Locks lobby weather and time to values defined in config.yml.
+    usage: |
+      /<command> <on|off|toggle|status>
+      /<command> weather <clear|rain|thunder>
+      /<command> time <day|sunset|night|sunrise>
+    permission: pblcore.weatherlock.admin
 
 permissions:
   pblcore.admin:
-    description: Permite recargar el plugin.
+    description: Allows reloading the plugin.
     default: op
   pblcore.chatlock.use:
-    description: Permite bloquear y desbloquear el chat.
+    description: Allows locking and unlocking the chat.
     default: op
   pblcore.chatlock.bypass:
-    description: Permite hablar en el chat aunque esté bloqueado.
+    description: Allows speaking while chat is locked.
     default: op
   pblcore.pvp:
     default: true
@@ -71,13 +78,16 @@ permissions:
   pblcore.pvp.diag:
     default: op
   pblcore.hideplayers.admin:
-    description: Permite activar/desactivar el módulo de ocultar jugadores.
+    description: Allows enabling/disabling the hide players module.
     default: op
   pblcore.hideplayers.bypass:
-    description: Permite ser elegible para bypass (no ser ocultado / ver a todos) si lo activas con el comando.
+    description: Allows being eligible for bypass (see everyone / not be hidden) when enabled via command.
     default: op
   pblcore.hideplayers.bypass.toggle:
-    description: Permite usar /hidebypass.
+    description: Allows using /hidebypass.
     default: op
     children:
       pblcore.hideplayers.bypass: true
+  pblcore.weatherlock.admin:
+    description: Allows managing the WeatherLock module and its settings.
+    default: op

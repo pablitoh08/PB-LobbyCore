@@ -68,5 +68,12 @@ chat-bypass-players:
   - 'Player1'
   - 'Player2'
 
+weather-lock:
+  # Possible values: CLEAR, RAIN, THUNDER
+  weather: CLEAR
+
+  # Possible values: DAY, SUNSET, NIGHT, SUNRISE
+  time: DAY
+
 # DON'T TOUCH THIS
-config-version: 2
+config-version: 2.1

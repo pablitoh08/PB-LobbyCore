@@ -17,6 +17,7 @@ modules:
   chat-lock: true
   chat-announcements: true
   hide-players: false
+  weather-lock: false
 
 # DON'T TOUCH THIS
-config-version: 2.0
+config-version: 2.1

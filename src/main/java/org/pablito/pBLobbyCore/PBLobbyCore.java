@@ -10,14 +10,17 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.pablito.pBLobbyCore.commands.HideBypassCommand;
 import org.pablito.pBLobbyCore.commands.HidePlayersModuleCommand;
-import org.pablito.pBLobbyCore.commands.PBLobbyCoreCommand;
 import org.pablito.pBLobbyCore.commands.LockChatCommand;
+import org.pablito.pBLobbyCore.commands.PBLobbyCoreCommand;
+import org.pablito.pBLobbyCore.commands.WeatherLockCommand;
 import org.pablito.pBLobbyCore.listeners.ChatLockListener;
 import org.pablito.pBLobbyCore.listeners.HidePlayersListener;
 import org.pablito.pBLobbyCore.listeners.MaintenanceListener;
 import org.pablito.pBLobbyCore.listeners.PlugmanBlocker;
+import org.pablito.pBLobbyCore.listeners.WeatherLockListener;
 import org.pablito.pBLobbyCore.pvp.NoPvpListener;
 import org.pablito.pBLobbyCore.pvp.PvpCommand;
 import org.pablito.pBLobbyCore.pvp.PvpDiagCommand;
@@ -54,9 +57,16 @@ public class PBLobbyCore extends JavaPlugin {
     private final Set<UUID> hideBypassEnabled = new HashSet<>();
     private HidePlayersListener hidePlayersListener;
 
+    private boolean weatherLockEnabled;
+    private FixedWeatherType fixedWeatherType = FixedWeatherType.CLEAR;
+    private FixedTimeOfDay fixedTimeOfDay = FixedTimeOfDay.DAY;
+    private BukkitTask weatherLockTask;
+
     public static final String PERM_HIDE_MODULE = "pblcore.hideplayers.admin";
     public static final String PERM_HIDE_BYPASS = "pblcore.hideplayers.bypass";
     public static final String PERM_HIDE_BYPASS_TOGGLE = "pblcore.hideplayers.bypass.toggle";
+
+    public static final String PERM_WEATHERLOCK_ADMIN = "pblcore.weatherlock.admin";
 
     @Override
     public void onEnable() {
@@ -72,6 +82,7 @@ public class PBLobbyCore extends JavaPlugin {
         reloadWhitelistConfig();
 
         loadHidePlayersSettings();
+        loadWeatherLockSettings();
 
         setupBStats();
 
@@ -103,8 +114,14 @@ public class PBLobbyCore extends JavaPlugin {
             logInfo("log.listener.loaded_nopvp", "[No-PvP] Listener cargado (opt-in /pvp).");
         }
 
+        // Hide Players
         this.hidePlayersListener = new HidePlayersListener(this);
         pm.registerEvents(this.hidePlayersListener, this);
+
+        // Weather lock
+        pm.registerEvents(new WeatherLockListener(this), this);
+        startWeatherLockTaskIfNeeded();
+        applyWeatherLockNow();
 
         pm.registerEvents(new PlugmanBlocker(this), this);
 
@@ -117,6 +134,10 @@ public class PBLobbyCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (weatherLockTask != null) {
+            weatherLockTask.cancel();
+            weatherLockTask = null;
+        }
         logInfo("log.plugin.disabled", "PBLobbyCore deshabilitado.");
     }
 
@@ -144,6 +165,9 @@ public class PBLobbyCore extends JavaPlugin {
 
         PluginCommand hideBypassCmd = getCommand("hidebypass");
         if (hideBypassCmd != null) hideBypassCmd.setExecutor(new HideBypassCommand(this));
+
+        PluginCommand weatherLockCmd = getCommand("weatherlock");
+        if (weatherLockCmd != null) weatherLockCmd.setExecutor(new WeatherLockCommand(this));
     }
 
     public void saveSpawnLocation(Location loc) {
@@ -204,8 +228,8 @@ public class PBLobbyCore extends JavaPlugin {
         this.messageManager = new MessageManager(this);
 
         loadHidePlayersSettings();
+        loadWeatherLockSettings();
 
-        // Reasignar ejecutores (manteniendo tu patrón actual)
         PluginCommand coreCmd = getCommand("pblcore");
         if (coreCmd != null) coreCmd.setExecutor(new PBLobbyCoreCommand(this, this.messageManager));
 
@@ -233,7 +257,13 @@ public class PBLobbyCore extends JavaPlugin {
         PluginCommand hideBypassCmd = getCommand("hidebypass");
         if (hideBypassCmd != null) hideBypassCmd.setExecutor(new HideBypassCommand(this));
 
+        PluginCommand weatherLockCmd = getCommand("weatherlock");
+        if (weatherLockCmd != null) weatherLockCmd.setExecutor(new WeatherLockCommand(this));
+
         applyHidePlayersRules();
+
+        startWeatherLockTaskIfNeeded();
+        applyWeatherLockNow();
 
         logInfo("log.plugin.reloaded", "[PBLobbyCore] Configs recargadas y ejecutores re-asignados.");
     }
@@ -402,7 +432,6 @@ public class PBLobbyCore extends JavaPlugin {
 
         current.setDefaults(defaults);
         current.options().copyDefaults(true);
-
         current.set(versionPath, defaultVersion);
 
         try {
@@ -422,13 +451,13 @@ public class PBLobbyCore extends JavaPlugin {
 
     private void updateModulesIfNeeded() {
         if (modulesFile == null) modulesFile = new File(getDataFolder(), "modules.yml");
-        updateYamlFileIfNeeded("modules.yml", modulesFile, "config-version");
+        updateYamlFileIfNeeded("modules.yml", modulesFile, "config-version"); // tu modules.yml usa config-version
         reloadModulesConfig();
     }
 
     private void loadHidePlayersSettings() {
         this.hidePlayersEnabled = getModulesConfig().getBoolean("modules.hide-players", false);
-        this.hideBypassEnabled.clear(); // bypass solo en memoria
+        this.hideBypassEnabled.clear();
     }
 
     public boolean isHidePlayersEnabled() {
@@ -469,6 +498,132 @@ public class PBLobbyCore extends JavaPlugin {
                     p.showPlayer(this, t);
                 }
             }
+        }
+    }
+
+    public enum FixedWeatherType {
+        CLEAR, RAIN, THUNDER;
+
+        public static FixedWeatherType fromString(String s, FixedWeatherType def) {
+            if (s == null) return def;
+            try {
+                return FixedWeatherType.valueOf(s.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return def;
+            }
+        }
+    }
+
+    public enum FixedTimeOfDay {
+        DAY(6000L),
+        SUNSET(12000L),
+        NIGHT(18000L),
+        SUNRISE(23000L);
+
+        private final long time;
+
+        FixedTimeOfDay(long time) {
+            this.time = time;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        public static FixedTimeOfDay fromString(String s, FixedTimeOfDay def) {
+            if (s == null) return def;
+            try {
+                return FixedTimeOfDay.valueOf(s.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return def;
+            }
+        }
+    }
+
+    private void loadWeatherLockSettings() {
+        this.weatherLockEnabled = getModulesConfig().getBoolean("modules.weather-lock", false);
+
+        String w = getConfig().getString("weather-lock.weather", "CLEAR");
+        String t = getConfig().getString("weather-lock.time", "DAY");
+
+        this.fixedWeatherType = FixedWeatherType.fromString(w, FixedWeatherType.CLEAR);
+        this.fixedTimeOfDay = FixedTimeOfDay.fromString(t, FixedTimeOfDay.DAY);
+    }
+
+    public boolean isWeatherLockEnabled() {
+        return weatherLockEnabled;
+    }
+
+    public FixedWeatherType getFixedWeatherType() {
+        return fixedWeatherType;
+    }
+
+    public FixedTimeOfDay getFixedTimeOfDay() {
+        return fixedTimeOfDay;
+    }
+
+    public void setWeatherLockEnabled(boolean enabled) {
+        this.weatherLockEnabled = enabled;
+        getModulesConfig().set("modules.weather-lock", enabled);
+        saveModulesConfig();
+
+        startWeatherLockTaskIfNeeded();
+        if (enabled) applyWeatherLockNow();
+    }
+
+    public void setWeatherLockWeather(FixedWeatherType type) {
+        if (type == null) return;
+        this.fixedWeatherType = type;
+        getConfig().set("weather-lock.weather", type.name());
+        saveConfig();
+        if (weatherLockEnabled) applyWeatherLockNow();
+    }
+
+    public void setWeatherLockTime(FixedTimeOfDay tod) {
+        if (tod == null) return;
+        this.fixedTimeOfDay = tod;
+        getConfig().set("weather-lock.time", tod.name());
+        saveConfig();
+        if (weatherLockEnabled) applyWeatherLockNow();
+    }
+
+    private void startWeatherLockTaskIfNeeded() {
+        if (!weatherLockEnabled) {
+            if (weatherLockTask != null) {
+                weatherLockTask.cancel();
+                weatherLockTask = null;
+            }
+            return;
+        }
+
+        if (weatherLockTask != null) return;
+
+        weatherLockTask = Bukkit.getScheduler().runTaskTimer(this, this::applyWeatherLockNow, 20L, 20L * 60L);
+    }
+
+    public void applyWeatherLockNow() {
+        if (!weatherLockEnabled) return;
+
+        for (World w : Bukkit.getWorlds()) {
+            w.setTime(fixedTimeOfDay.getTime());
+
+            switch (fixedWeatherType) {
+                case CLEAR -> {
+                    w.setStorm(false);
+                    w.setThundering(false);
+                }
+                case RAIN -> {
+                    w.setStorm(true);
+                    w.setThundering(false);
+                }
+                case THUNDER -> {
+                    w.setStorm(true);
+                    w.setThundering(true);
+                }
+            }
+
+            w.setWeatherDuration(20 * 60 * 60);
+            w.setThunderDuration(20 * 60 * 60);
         }
     }
 }
