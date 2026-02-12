@@ -1,5 +1,5 @@
 name: PBLobbyCore
-version: 2.0
+version: 2.1
 main: org.pablito.pBLobbyCore.PBLobbyCore
 api-version: 1.16
 authors: [Pablito]
@@ -45,6 +45,14 @@ commands:
   pvpdiag:
     description: Muestra el orden de listeners de daño
     permission: pblcore.pvp.diag
+  hideplayers:
+    description: Activa/desactiva el módulo de ocultar jugadores.
+    usage: /<command> <on|off|toggle|status>
+    permission: pblcore.hideplayers.admin
+  hidebypass:
+    description: Activa/desactiva tu bypass de ocultar jugadores (solo sesión).
+    usage: /<command> <on|off|toggle|status>
+    permission: pblcore.hideplayers.bypass.toggle
 
 permissions:
   pblcore.admin:
@@ -62,3 +70,14 @@ permissions:
     default: op
   pblcore.pvp.diag:
     default: op
+  pblcore.hideplayers.admin:
+    description: Permite activar/desactivar el módulo de ocultar jugadores.
+    default: op
+  pblcore.hideplayers.bypass:
+    description: Permite ser elegible para bypass (no ser ocultado / ver a todos) si lo activas con el comando.
+    default: op
+  pblcore.hideplayers.bypass.toggle:
+    description: Permite usar /hidebypass.
+    default: op
+    children:
+      pblcore.hideplayers.bypass: true

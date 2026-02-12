@@ -7,18 +7,30 @@ import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.pablito.pBLobbyCore.commands.HideBypassCommand;
+import org.pablito.pBLobbyCore.commands.HidePlayersModuleCommand;
 import org.pablito.pBLobbyCore.commands.PBLobbyCoreCommand;
 import org.pablito.pBLobbyCore.commands.LockChatCommand;
 import org.pablito.pBLobbyCore.listeners.ChatLockListener;
+import org.pablito.pBLobbyCore.listeners.HidePlayersListener;
 import org.pablito.pBLobbyCore.listeners.MaintenanceListener;
 import org.pablito.pBLobbyCore.listeners.PlugmanBlocker;
-import org.pablito.pBLobbyCore.pvp.*;
+import org.pablito.pBLobbyCore.pvp.NoPvpListener;
+import org.pablito.pBLobbyCore.pvp.PvpCommand;
+import org.pablito.pBLobbyCore.pvp.PvpDiagCommand;
+import org.pablito.pBLobbyCore.pvp.PvpToggleStore;
 import org.pablito.pBLobbyCore.utils.MessageManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class PBLobbyCore extends JavaPlugin {
 
@@ -36,19 +48,31 @@ public class PBLobbyCore extends JavaPlugin {
 
     private PvpToggleStore pvpToggleStore;
 
-    // bStats
     private Metrics metrics;
+
+    private boolean hidePlayersEnabled;
+    private final Set<UUID> hideBypassEnabled = new HashSet<>();
+    private HidePlayersListener hidePlayersListener;
+
+    public static final String PERM_HIDE_MODULE = "pblcore.hideplayers.admin";
+    public static final String PERM_HIDE_BYPASS = "pblcore.hideplayers.bypass";
+    public static final String PERM_HIDE_BYPASS_TOGGLE = "pblcore.hideplayers.bypass.toggle";
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
 
+        updateConfigIfNeeded();
+
         this.messageManager = new MessageManager(this);
 
         setupModulesConfig();
+        updateModulesIfNeeded();
+
         reloadWhitelistConfig();
 
-        // bStats
+        loadHidePlayersSettings();
+
         setupBStats();
 
         loadSpawnLocationFromConfig();
@@ -79,9 +103,14 @@ public class PBLobbyCore extends JavaPlugin {
             logInfo("log.listener.loaded_nopvp", "[No-PvP] Listener cargado (opt-in /pvp).");
         }
 
+        this.hidePlayersListener = new HidePlayersListener(this);
+        pm.registerEvents(this.hidePlayersListener, this);
+
         pm.registerEvents(new PlugmanBlocker(this), this);
 
         registerExtraCommands();
+
+        applyHidePlayersRules();
 
         logInfo("log.plugin.enabled", "PBLobbyCore habilitado correctamente.");
     }
@@ -109,6 +138,12 @@ public class PBLobbyCore extends JavaPlugin {
 
         PluginCommand diagCmd = getCommand("pvpdiag");
         if (diagCmd != null) diagCmd.setExecutor(new PvpDiagCommand(this));
+
+        PluginCommand hidePlayersCmd = getCommand("hideplayers");
+        if (hidePlayersCmd != null) hidePlayersCmd.setExecutor(new HidePlayersModuleCommand(this));
+
+        PluginCommand hideBypassCmd = getCommand("hidebypass");
+        if (hideBypassCmd != null) hideBypassCmd.setExecutor(new HideBypassCommand(this));
     }
 
     public void saveSpawnLocation(Location loc) {
@@ -159,12 +194,18 @@ public class PBLobbyCore extends JavaPlugin {
     }
 
     public void reloadPluginConfigs() {
-        reloadConfig();
+        updateConfigIfNeeded();
+
         reloadModulesConfig();
+        updateModulesIfNeeded();
+
         reloadWhitelistConfig();
 
         this.messageManager = new MessageManager(this);
 
+        loadHidePlayersSettings();
+
+        // Reasignar ejecutores (manteniendo tu patrón actual)
         PluginCommand coreCmd = getCommand("pblcore");
         if (coreCmd != null) coreCmd.setExecutor(new PBLobbyCoreCommand(this, this.messageManager));
 
@@ -185,6 +226,14 @@ public class PBLobbyCore extends JavaPlugin {
 
         PluginCommand diagCmd = getCommand("pvpdiag");
         if (diagCmd != null) diagCmd.setExecutor(new org.pablito.pBLobbyCore.pvp.PvpDiagCommand(this));
+
+        PluginCommand hidePlayersCmd = getCommand("hideplayers");
+        if (hidePlayersCmd != null) hidePlayersCmd.setExecutor(new HidePlayersModuleCommand(this));
+
+        PluginCommand hideBypassCmd = getCommand("hidebypass");
+        if (hideBypassCmd != null) hideBypassCmd.setExecutor(new HideBypassCommand(this));
+
+        applyHidePlayersRules();
 
         logInfo("log.plugin.reloaded", "[PBLobbyCore] Configs recargadas y ejecutores re-asignados.");
     }
@@ -210,7 +259,8 @@ public class PBLobbyCore extends JavaPlugin {
         if (!modulesFile.exists()) {
             try {
                 saveResource("modules.yml", false);
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
 
             if (!modulesFile.exists()) {
                 try {
@@ -259,7 +309,8 @@ public class PBLobbyCore extends JavaPlugin {
         if (!whitelistFile.exists()) {
             try {
                 saveResource("whitelist.yml", false);
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
 
             if (!whitelistFile.exists()) {
                 try {
@@ -286,7 +337,7 @@ public class PBLobbyCore extends JavaPlugin {
         return this.messageManager;
     }
 
-    private String tr(String key, String fallback) {
+    public String tr(String key, String fallback) {
         if (this.messageManager == null || key == null || key.isEmpty()) return fallback;
 
         String msg = this.messageManager.getMessage(key);
@@ -319,6 +370,105 @@ public class PBLobbyCore extends JavaPlugin {
             this.metrics = new Metrics(this, pluginId);
         } catch (Throwable t) {
             logWarn("log.bstats.failed", "[bStats] No se pudo inicializar: " + t.getMessage());
+        }
+    }
+
+    private boolean updateYamlFileIfNeeded(String resourceName, File targetFile, String versionPath) {
+        if (targetFile == null) return false;
+
+        if (!getDataFolder().exists()) getDataFolder().mkdirs();
+
+        if (!targetFile.exists()) {
+            try {
+                saveResource(resourceName, false);
+                return true;
+            } catch (IllegalArgumentException ignored) {
+                return false;
+            }
+        }
+
+        YamlConfiguration current = YamlConfiguration.loadConfiguration(targetFile);
+
+        if (getResource(resourceName) == null) return false;
+
+        YamlConfiguration defaults = YamlConfiguration.loadConfiguration(
+                new InputStreamReader(getResource(resourceName), StandardCharsets.UTF_8)
+        );
+
+        double currentVersion = current.getDouble(versionPath, 0.0);
+        double defaultVersion = defaults.getDouble(versionPath, 0.0);
+
+        if (defaultVersion <= currentVersion) return false;
+
+        current.setDefaults(defaults);
+        current.options().copyDefaults(true);
+
+        current.set(versionPath, defaultVersion);
+
+        try {
+            current.save(targetFile);
+            return true;
+        } catch (IOException e) {
+            getLogger().severe(tr("log.file.save_failed_modules", "No se pudo guardar " + resourceName + ": ") + e.getMessage());
+            return false;
+        }
+    }
+
+    private void updateConfigIfNeeded() {
+        File cfg = new File(getDataFolder(), "config.yml");
+        updateYamlFileIfNeeded("config.yml", cfg, "config-version");
+        reloadConfig();
+    }
+
+    private void updateModulesIfNeeded() {
+        if (modulesFile == null) modulesFile = new File(getDataFolder(), "modules.yml");
+        updateYamlFileIfNeeded("modules.yml", modulesFile, "config-version");
+        reloadModulesConfig();
+    }
+
+    private void loadHidePlayersSettings() {
+        this.hidePlayersEnabled = getModulesConfig().getBoolean("modules.hide-players", false);
+        this.hideBypassEnabled.clear(); // bypass solo en memoria
+    }
+
+    public boolean isHidePlayersEnabled() {
+        return hidePlayersEnabled;
+    }
+
+    public void setHidePlayersEnabled(boolean enabled) {
+        this.hidePlayersEnabled = enabled;
+        getModulesConfig().set("modules.hide-players", enabled);
+        saveModulesConfig();
+        applyHidePlayersRules();
+    }
+
+    public boolean canUseBypass(Player player) {
+        return player != null && player.hasPermission(PERM_HIDE_BYPASS);
+    }
+
+    public boolean isBypassEnabled(Player player) {
+        return player != null && canUseBypass(player) && hideBypassEnabled.contains(player.getUniqueId());
+    }
+
+    public void setBypassEnabled(Player player, boolean enabled) {
+        if (player == null) return;
+
+        if (enabled) hideBypassEnabled.add(player.getUniqueId());
+        else hideBypassEnabled.remove(player.getUniqueId());
+
+        applyHidePlayersRules();
+    }
+
+    public void applyHidePlayersRules() {
+        if (this.hidePlayersListener != null) {
+            this.hidePlayersListener.applyForAllOnline();
+        } else {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                for (Player t : Bukkit.getOnlinePlayers()) {
+                    if (p.equals(t)) continue;
+                    p.showPlayer(this, t);
+                }
+            }
         }
     }
 }

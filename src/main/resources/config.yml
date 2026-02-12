@@ -29,14 +29,12 @@ blockbreak-bypass-players:
   - 'Player2'
 
 ## Maintenance Mode Module
-
 maintenance:
   whitelist:
     - 'Player1'
     - 'Player2'
 
-## Scoreabord Module
-
+## Scoreboard Module
 scoreboard:
   title: "&b&lYourServer"
   update-interval: 20
@@ -48,7 +46,7 @@ scoreboard:
     - ""
     - "&7web.yourdomain.com"
 
-# TAB Module
+## TAB Module
 tab:
   # TAB update interval in ticks (20 ticks = 1 second)
   update-interval: 20
@@ -65,7 +63,7 @@ tab:
     - "&f"
     - "&cDiscord: &fdiscord.gg/rHbzfuvG6f"
 
-# Chat Locker Module
+## Chat Locker Module
 chat-bypass-players:
   - 'Player1'
   - 'Player2'

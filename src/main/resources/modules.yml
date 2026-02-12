@@ -16,6 +16,7 @@ modules:
   tab: true
   chat-lock: true
   chat-announcements: true
+  hide-players: false
 
 # DON'T TOUCH THIS
-config-version: 1.9
+config-version: 2.0
