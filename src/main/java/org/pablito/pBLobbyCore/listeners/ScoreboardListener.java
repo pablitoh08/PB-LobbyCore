@@ -9,11 +9,9 @@ import org.pablito.pBLobbyCore.utils.ScoreboardManager;
 
 public class ScoreboardListener implements Listener {
 
-    private final PBLobbyCore plugin;
     private final ScoreboardManager scoreboardManager;
 
-    public ScoreboardListener(PBLobbyCore plugin, ScoreboardManager scoreboardManager) {
-        this.plugin = plugin;
+    public ScoreboardListener(ScoreboardManager scoreboardManager) {
         this.scoreboardManager = scoreboardManager;
     }
 

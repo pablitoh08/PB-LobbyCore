@@ -1,55 +1,60 @@
 package org.pablito.pBLobbyCore.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.pablito.pBLobbyCore.PBLobbyCore;
+import org.pablito.pBLobbyCore.managers.HidePlayersManager;
+import org.pablito.pBLobbyCore.managers.MessageManager;
 
-public class HidePlayersModuleCommand implements CommandExecutor {
+import java.util.Arrays;
+import java.util.List;
 
-    private final PBLobbyCore plugin;
+/**
+ * Command to enable/disable the global hide-players module.
+ * Usage: /hideplayers <on|off|toggle|status>
+ */
+public class HidePlayersModuleCommand extends BaseCommand {
 
     public HidePlayersModuleCommand(PBLobbyCore plugin) {
-        this.plugin = plugin;
+        super(plugin, plugin.getMessageManager(), HidePlayersManager.PERM_MODULE, false);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        if (!sender.hasPermission(PBLobbyCore.PERM_HIDE_MODULE)) {
-            sender.sendMessage(plugin.tr("hide.module.no_permission", "§cNo tienes permiso para hacer esto."));
-            return true;
-        }
-
+    protected void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(plugin.tr("hide.module.usage", "§eUso: /hideplayers <on|off|toggle|status>"));
-            return true;
+            sender.sendMessage(messageManager.getMessage("hide.module.usage"));
+            return;
         }
 
+        HidePlayersManager hpm = plugin.getHidePlayersManager();
         String sub = args[0].toLowerCase();
 
         switch (sub) {
             case "on", "enable" -> {
-                plugin.setHidePlayersEnabled(true);
-                sender.sendMessage(plugin.tr("hide.module.enabled", "§aMódulo de ocultar jugadores activado."));
+                hpm.setEnabled(true);
+                sender.sendMessage(messageManager.getMessage("hide.module.enabled"));
             }
             case "off", "disable" -> {
-                plugin.setHidePlayersEnabled(false);
-                sender.sendMessage(plugin.tr("hide.module.disabled", "§cMódulo de ocultar jugadores desactivado."));
+                hpm.setEnabled(false);
+                sender.sendMessage(messageManager.getMessage("hide.module.disabled"));
             }
             case "toggle" -> {
-                boolean newState = !plugin.isHidePlayersEnabled();
-                plugin.setHidePlayersEnabled(newState);
-                sender.sendMessage(plugin.tr(newState ? "hide.module.enabled" : "hide.module.disabled",
-                        newState ? "§aMódulo activado." : "§cMódulo desactivado."));
+                boolean newState = !hpm.isEnabled();
+                hpm.setEnabled(newState);
+                sender.sendMessage(messageManager.getMessage(newState ? "hide.module.enabled" : "hide.module.disabled"));
             }
             case "status" -> {
-                sender.sendMessage(plugin.tr(plugin.isHidePlayersEnabled() ? "hide.module.status_on" : "hide.module.status_off",
-                        plugin.isHidePlayersEnabled() ? "§aOcultar jugadores: ACTIVO" : "§cOcultar jugadores: INACTIVO"));
+                boolean st = hpm.isEnabled();
+                sender.sendMessage(messageManager.getMessage(st ? "hide.module.status_on" : "hide.module.status_off"));
             }
-            default -> sender.sendMessage(plugin.tr("hide.module.usage", "§eUso: /hideplayers <on|off|toggle|status>"));
+            default -> sender.sendMessage(messageManager.getMessage("hide.module.usage"));
         }
+    }
 
-        return true;
+    @Override
+    protected List<String> tabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            return filterCompletions(Arrays.asList("on", "off", "toggle", "status"), args[0]);
+        }
+        return super.tabComplete(sender, args);
     }
 }

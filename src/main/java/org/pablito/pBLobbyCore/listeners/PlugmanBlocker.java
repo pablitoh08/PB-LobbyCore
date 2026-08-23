@@ -8,17 +8,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.pablito.pBLobbyCore.PBLobbyCore;
-import org.pablito.pBLobbyCore.utils.MessageManager;
 
+/**
+ * Listener that blocks plugman commands targeting this plugin.
+ * Prevents other plugins or players from unloading/disabling PB-LobbyCore.
+ *
+ * @author Pablito
+ * @since 2.4
+ */
 public class PlugmanBlocker implements Listener {
 
     private final PBLobbyCore plugin;
-    private final MessageManager messages;
 
     public PlugmanBlocker(PBLobbyCore plugin) {
         this.plugin = plugin;
-        MessageManager mm = plugin.getMessageManager();
-        this.messages = (mm != null) ? mm : new MessageManager(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -30,8 +33,7 @@ public class PlugmanBlocker implements Listener {
 
         if (isBlockedCommand(raw)) {
             event.setCancelled(true);
-            sender.sendMessage(msg("commands.plugman_blocked",
-                    "&cEste comando está bloqueado para proteger el servidor."));
+            sender.sendMessage(getBlockMessage());
         }
     }
 
@@ -42,8 +44,7 @@ public class PlugmanBlocker implements Listener {
 
         if (isBlockedCommand(raw)) {
             event.setCancelled(true);
-            sender.sendMessage(stripColors(msg("commands.plugman_blocked",
-                    "&cEste comando está bloqueado para proteger el servidor.")));
+            sender.sendMessage(stripColors(getBlockMessage()));
         }
     }
 
@@ -54,7 +55,6 @@ public class PlugmanBlocker implements Listener {
         if (!isPlugman) return false;
 
         String thisPlugin = plugin.getName().toLowerCase();
-
         boolean targetsThis = c.contains(thisPlugin);
         if (!targetsThis) return false;
 
@@ -70,18 +70,14 @@ public class PlugmanBlocker implements Listener {
         return (s == null) ? "" : s.trim();
     }
 
-    private String msg(String key, String def) {
-        try {
-            String m = messages.getMessage(key);
-            if (m == null || m.isEmpty()) return color(def);
-            return m;
-        } catch (Throwable ignored) {
-            return color(def);
+    private String getBlockMessage() {
+        if (plugin.getMessageManager() != null) {
+            String msg = plugin.getMessageManager().getMessage("commands.plugman_blocked");
+            if (msg != null && !msg.isEmpty() && !msg.contains("Message not found")) {
+                return msg;
+            }
         }
-    }
-
-    private String color(String s) {
-        return s.replace('&', '§');
+        return "§cEste comando está bloqueado para proteger el servidor.";
     }
 
     private String stripColors(String s) {

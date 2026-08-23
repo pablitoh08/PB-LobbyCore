@@ -1,34 +1,42 @@
 package org.pablito.pBLobbyCore.listeners;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.pablito.pBLobbyCore.PBLobbyCore;
-import org.pablito.pBLobbyCore.utils.MessageManager;
+import org.pablito.pBLobbyCore.managers.MessageManager;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-public class BlockBreakListener implements Listener{
+/**
+ * Listener for block-break prevention.
+ * Cancels all block-break events unless player is in the bypass list.
+ *
+ * <p>Optimized: uses HashSet for O(1) bypass lookups.</p>
+ *
+ * @author Pablito
+ * @since 2.4
+ */
+public class BlockBreakListener implements Listener {
 
     private final MessageManager messageManager;
-    private final List<String> blockbreakBypassPlayers;
+    private final Set<String> bypassPlayers;
 
     public BlockBreakListener(MessageManager messageManager, PBLobbyCore plugin) {
         this.messageManager = messageManager;
-        this.blockbreakBypassPlayers = plugin.getConfig().getStringList("blockbreak-bypass-players");
+        this.bypassPlayers = new HashSet<>(plugin.getConfig().getStringList("blockbreak-bypass-players"));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerDestroyBlock(BlockBreakEvent event) {
         Player player = event.getPlayer();
 
-        if(blockbreakBypassPlayers.contains(player.getName())) {
-            return;
-        }
+        if (bypassPlayers.contains(player.getName())) return;
 
         event.setCancelled(true);
-
         player.sendMessage(messageManager.getMessage("no-block-break"));
     }
 }

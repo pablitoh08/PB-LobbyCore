@@ -1,62 +1,68 @@
 package org.pablito.pBLobbyCore.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.pablito.pBLobbyCore.PBLobbyCore;
+import org.pablito.pBLobbyCore.managers.HidePlayersManager;
+import org.pablito.pBLobbyCore.managers.MessageManager;
 
-public class HideBypassCommand implements CommandExecutor {
+import java.util.Arrays;
+import java.util.List;
 
-    private final PBLobbyCore plugin;
+/**
+ * Command to toggle hide players bypass for the executing player.
+ * Usage: /hidebypass <on|off|toggle|status>
+ */
+public class HideBypassCommand extends BaseCommand {
 
     public HideBypassCommand(PBLobbyCore plugin) {
-        this.plugin = plugin;
+        super(plugin, plugin.getMessageManager(), HidePlayersManager.PERM_BYPASS_TOGGLE, true);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    protected void execute(CommandSender sender, String[] args) {
+        Player player = getPlayer(sender);
+        if (player == null) return;
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Only players can use this command.");
-            return true;
-        }
-
-        if (!player.hasPermission(PBLobbyCore.PERM_HIDE_BYPASS_TOGGLE) || !player.hasPermission(PBLobbyCore.PERM_HIDE_BYPASS)) {
-            player.sendMessage(plugin.tr("hide.bypass.no_permission", "§cNo tienes permiso para usar el bypass."));
-            return true;
+        if (!player.hasPermission(HidePlayersManager.PERM_BYPASS)) {
+            player.sendMessage(messageManager.getMessage("hide.bypass.no_permission"));
+            return;
         }
 
         if (args.length == 0) {
-            player.sendMessage(plugin.tr("hide.bypass.usage", "§eUso: /hidebypass <on|off|toggle|status>"));
-            return true;
+            player.sendMessage(messageManager.getMessage("hide.bypass.usage"));
+            return;
         }
 
+        HidePlayersManager hpm = plugin.getHidePlayersManager();
         String sub = args[0].toLowerCase();
 
         switch (sub) {
             case "on", "enable" -> {
-                plugin.setBypassEnabled(player, true);
-                player.sendMessage(plugin.tr("hide.bypass.enabled", "§aBypass activado."));
+                hpm.setBypassEnabled(player, true);
+                player.sendMessage(messageManager.getMessage("hide.bypass.enabled"));
             }
             case "off", "disable" -> {
-                plugin.setBypassEnabled(player, false);
-                player.sendMessage(plugin.tr("hide.bypass.disabled", "§cBypass desactivado."));
+                hpm.setBypassEnabled(player, false);
+                player.sendMessage(messageManager.getMessage("hide.bypass.disabled"));
             }
             case "toggle" -> {
-                boolean newState = !plugin.isBypassEnabled(player);
-                plugin.setBypassEnabled(player, newState);
-                player.sendMessage(plugin.tr(newState ? "hide.bypass.enabled" : "hide.bypass.disabled",
-                        newState ? "§aBypass activado." : "§cBypass desactivado."));
+                boolean newState = hpm.toggleBypass(player);
+                player.sendMessage(messageManager.getMessage(newState ? "hide.bypass.enabled" : "hide.bypass.disabled"));
             }
             case "status" -> {
-                boolean st = plugin.isBypassEnabled(player);
-                player.sendMessage(plugin.tr(st ? "hide.bypass.status_on" : "hide.bypass.status_off",
-                        st ? "§aBypass: ACTIVO" : "§cBypass: INACTIVO"));
+                boolean st = hpm.isBypassEnabled(player);
+                player.sendMessage(messageManager.getMessage(st ? "hide.bypass.status_on" : "hide.bypass.status_off"));
             }
-            default -> player.sendMessage(plugin.tr("hide.bypass.usage", "§eUso: /hidebypass <on|off|toggle|status>"));
+            default -> player.sendMessage(messageManager.getMessage("hide.bypass.usage"));
         }
+    }
 
-        return true;
+    @Override
+    protected List<String> tabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            return filterCompletions(Arrays.asList("on", "off", "toggle", "status"), args[0]);
+        }
+        return super.tabComplete(sender, args);
     }
 }

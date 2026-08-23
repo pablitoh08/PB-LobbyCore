@@ -6,7 +6,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.pablito.pBLobbyCore.PBLobbyCore;
+import org.pablito.pBLobbyCore.managers.WeatherManager;
 
+/**
+ * Listener for the weather-lock system.
+ * Enforces weather and time settings by cancelling unwanted changes.
+ *
+ * @author Pablito
+ * @since 2.4
+ */
 public class WeatherLockListener implements Listener {
 
     private final PBLobbyCore plugin;
@@ -17,37 +25,36 @@ public class WeatherLockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onWeatherChange(WeatherChangeEvent e) {
-        if (!plugin.isWeatherLockEnabled()) return;
+        WeatherManager wm = plugin.getWeatherManager();
+        if (!wm.isEnabled()) return;
 
         if (e.toWeatherState()) {
-            PBLobbyCore.FixedWeatherType desired = plugin.getFixedWeatherType();
-            if (desired == PBLobbyCore.FixedWeatherType.CLEAR) {
+            // Weather is changing TO stormy
+            if (wm.getWeatherType() == WeatherManager.FixedWeatherType.CLEAR) {
                 e.setCancelled(true);
             }
-            plugin.applyWeatherLockNow();
-            return;
-        }
-
-        PBLobbyCore.FixedWeatherType desired = plugin.getFixedWeatherType();
-        if (desired == PBLobbyCore.FixedWeatherType.RAIN || desired == PBLobbyCore.FixedWeatherType.THUNDER) {
-            plugin.applyWeatherLockNow();
+            wm.applyNow();
+        } else {
+            // Weather is changing TO clear
+            WeatherManager.FixedWeatherType desired = wm.getWeatherType();
+            if (desired == WeatherManager.FixedWeatherType.RAIN || desired == WeatherManager.FixedWeatherType.THUNDER) {
+                wm.applyNow();
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onThunderChange(ThunderChangeEvent e) {
-        if (!plugin.isWeatherLockEnabled()) return;
+        WeatherManager wm = plugin.getWeatherManager();
+        if (!wm.isEnabled()) return;
 
-        PBLobbyCore.FixedWeatherType desired = plugin.getFixedWeatherType();
+        WeatherManager.FixedWeatherType desired = wm.getWeatherType();
 
-        if (e.toThunderState() && desired != PBLobbyCore.FixedWeatherType.THUNDER) {
+        if (e.toThunderState() && desired != WeatherManager.FixedWeatherType.THUNDER) {
             e.setCancelled(true);
-            plugin.applyWeatherLockNow();
-            return;
-        }
-
-        if (!e.toThunderState() && desired == PBLobbyCore.FixedWeatherType.THUNDER) {
-            plugin.applyWeatherLockNow();
+            wm.applyNow();
+        } else if (!e.toThunderState() && desired == WeatherManager.FixedWeatherType.THUNDER) {
+            wm.applyNow();
         }
     }
 }

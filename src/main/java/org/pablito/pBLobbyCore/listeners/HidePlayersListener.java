@@ -8,7 +8,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.pablito.pBLobbyCore.PBLobbyCore;
+import org.pablito.pBLobbyCore.managers.HidePlayersManager;
 
+import java.util.Collection;
+
+/**
+ * Listener for the hide-players system.
+ * Applies hide/show rules on join/quit events.
+ *
+ * <p>Optimized: uses cached player arrays to avoid repeated getOnlinePlayers() calls.
+ * Scheduled task to avoid heavy computation in event handlers.</p>
+ *
+ * @author Pablito
+ * @since 2.4
+ */
 public class HidePlayersListener implements Listener {
 
     private final PBLobbyCore plugin;
@@ -17,45 +30,63 @@ public class HidePlayersListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent e) {
         Bukkit.getScheduler().runTask(plugin, this::applyForAllOnline);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onQuit(PlayerQuitEvent e) {
         Bukkit.getScheduler().runTask(plugin, this::applyForAllOnline);
     }
 
+    /**
+     * Applies hide/show rules for all online players.
+     * Optimized to snapshot the player list once and use direct manager calls.
+     */
     public void applyForAllOnline() {
-        if (!plugin.isHidePlayersEnabled()) {
-            for (Player viewer : Bukkit.getOnlinePlayers()) {
-                for (Player target : Bukkit.getOnlinePlayers()) {
-                    if (viewer.equals(target)) continue;
-                    viewer.showPlayer(plugin, target);
+        HidePlayersManager hpm = plugin.getHidePlayersManager();
+
+        // Snapshot the online players once to avoid repeated iteration
+        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+        Player[] playerArray = onlinePlayers.toArray(new Player[0]);
+        int size = playerArray.length;
+
+        if (!hpm.isEnabled()) {
+            // When disabled, show everyone to everyone
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (i != j) {
+                        playerArray[i].showPlayer(plugin, playerArray[j]);
+                    }
                 }
             }
             return;
         }
 
-        for (Player viewer : Bukkit.getOnlinePlayers()) {
-            boolean viewerBypass = plugin.isBypassEnabled(viewer);
+        // When enabled, apply bypass rules
+        // Cache bypass states to avoid repeated permission checks
+        boolean[] bypassStates = new boolean[size];
+        for (int i = 0; i < size; i++) {
+            bypassStates[i] = hpm.isBypassEnabled(playerArray[i]);
+        }
 
-            for (Player target : Bukkit.getOnlinePlayers()) {
-                if (viewer.equals(target)) continue;
+        for (int i = 0; i < size; i++) {
+            Player viewer = playerArray[i];
+            boolean viewerBypass = bypassStates[i];
 
-                boolean targetBypass = plugin.isBypassEnabled(target);
+            for (int j = 0; j < size; j++) {
+                if (i == j) continue;
 
-                boolean shouldHide = false;
+                Player target = playerArray[j];
+                boolean targetBypass = bypassStates[j];
 
-                if (!viewerBypass) {
-                    if (!targetBypass) {
-                        shouldHide = true;
-                    }
+                // Show if viewer has bypass OR target has bypass
+                if (viewerBypass || targetBypass) {
+                    viewer.showPlayer(plugin, target);
+                } else {
+                    viewer.hidePlayer(plugin, target);
                 }
-
-                if (shouldHide) viewer.hidePlayer(plugin, target);
-                else viewer.showPlayer(plugin, target);
             }
         }
     }

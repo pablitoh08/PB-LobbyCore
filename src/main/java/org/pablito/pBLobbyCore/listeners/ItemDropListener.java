@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.pablito.pBLobbyCore.utils.MessageManager;
+import org.pablito.pBLobbyCore.managers.MessageManager;
 
 public class ItemDropListener implements Listener{
 

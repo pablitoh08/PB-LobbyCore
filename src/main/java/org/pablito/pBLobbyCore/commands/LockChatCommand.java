@@ -1,41 +1,44 @@
 package org.pablito.pBLobbyCore.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import org.pablito.pBLobbyCore.PBLobbyCore;
-import org.pablito.pBLobbyCore.utils.MessageManager;
+import org.pablito.pBLobbyCore.managers.ChatManager;
+import org.pablito.pBLobbyCore.managers.MessageManager;
 
-public class LockChatCommand implements CommandExecutor {
-
-    private final PBLobbyCore plugin;
-    private final MessageManager messageManager;
+/**
+ * Command to lock/unlock global chat.
+ * Usage: /lock or /unlock
+ */
+public class LockChatCommand extends BaseCommand {
 
     public LockChatCommand(PBLobbyCore plugin, MessageManager messageManager) {
-        this.plugin = plugin;
-        this.messageManager = messageManager;
+        super(plugin, messageManager, "pblcore.chatlock.use", false);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("pblcore.chatlock.use")) {
-            sender.sendMessage(messageManager.getMessage("permission-denied"));
-            return true;
-        }
-
-        if (!plugin.getModulesConfig().getBoolean("modules.chat-lock")) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        // Permission is checked by BaseCommand.onCommand
+        ChatManager chatManager = plugin.getChatManager();
+        if (!chatManager.isModuleEnabled()) {
             sender.sendMessage(messageManager.getMessage("module-disabled"));
             return true;
         }
 
-        if (command.getName().equalsIgnoreCase("lock")) {
-            plugin.setChatLocked(true);
+        boolean newState = command.getName().equalsIgnoreCase("lock");
+        chatManager.setChatLocked(newState);
+
+        if (newState) {
             sender.sendMessage(messageManager.getMessage("chat-locked-enabled"));
-        } else if (command.getName().equalsIgnoreCase("unlock")) {
-            plugin.setChatLocked(false);
+        } else {
             sender.sendMessage(messageManager.getMessage("chat-locked-disabled"));
         }
-
         return true;
+    }
+
+    @Override
+    protected void execute(CommandSender sender, String[] args) {
+        // Not used - onCommand is overridden directly for lock/unlock
     }
 }

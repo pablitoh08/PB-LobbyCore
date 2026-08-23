@@ -1,9 +1,9 @@
 name: PBLobbyCore
-version: 2.2
+version: 2.3
 main: org.pablito.pBLobbyCore.PBLobbyCore
 api-version: 1.16
 authors: [Pablito]
-description: A lobby management plugin.
+description: A comprehensive lobby management plugin.
 softdepend:
   - WorldGuard
   - CMI
