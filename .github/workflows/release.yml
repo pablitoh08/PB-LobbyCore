@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag (e.g. v2.3)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Build with Maven
+        run: mvn -B clean package --file pom.xml
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          # Extract all content for this version from CHANGELOG.md
+          # Grabs from ## [VERSION] until the next --- separator
+          CHANGELOG=$(awk -v ver="$VERSION" '
+            BEGIN { found=0; capture=0; content="" }
+            /^## \[/ {
+              if (capture) { capture=0 }
+              if (index($0, "[" ver "]")) { capture=1; found=1; next }
+            }
+            /^---$/ {
+              if (capture) { capture=0 }
+              else { content = content "\n" }
+              next
+            }
+            capture { content = content "\n" $0 }
+            END {
+              # Remove leading blank lines
+              gsub(/^\n+/, "", content)
+              print content
+            }
+          ' CHANGELOG.md)
+
+          if [ -z "$CHANGELOG" ]; then
+            echo "No changelog found for version $VERSION"
+            CHANGELOG="Release $VERSION"
+          fi
+
+          # Write to file to preserve multiline content
+          echo "$CHANGELOG" > /tmp/changelog_body.md
+          echo "Changelog extracted for version $VERSION"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: PB-LobbyCore ${{ steps.version.outputs.tag }}
+          body_path: /tmp/changelog_body.md
+          files: target/PB-LobbyCore-${{ steps.version.outputs.version }}.jar
+          draft: false
+          prerelease: false
